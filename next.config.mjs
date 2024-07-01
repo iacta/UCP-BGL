@@ -1,14 +1,8 @@
-import path from 'path';
+const path = require('path');
 
-const __dirname = new URL('.', import.meta.url).pathname;
-
-const nextConfig = {
- webpack: (config) => {
-config.resolve.alias = {
- ...config.resolve.alias,
-'@': path.resolve(__dirname, './'),
- };
-return config;
-},
+module.exports = {
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(__dirname);
+    return config;
+  },
 };
-export default nextConfig;
