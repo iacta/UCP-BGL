@@ -1,6 +1,6 @@
 import "./globals.css";
 import { inter } from "./fonts";
-import { Toaster } from "@/components/ui/Toaster";
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata = {
