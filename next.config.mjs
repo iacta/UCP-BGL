@@ -1,6 +1,7 @@
-import { resolve } from 'path';
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
 
-export function webpack(config) {
-    config.resolve.alias['@'] = resolve('./');
-    return config;
-}
+export default {
+    
+    ...nextConfig 
+};
