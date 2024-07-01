@@ -22,14 +22,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export function ReplyReport() {
+export function ReplyReport({ delationId, k }) {
     const { toast } = useToast();
     const formSchema = z.object({
         reply: z.string().max(100),
         veredit: z.string({
             required_error: "Por favor selecione uma opção.",
         })
-            .email(),
     });
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -40,22 +39,24 @@ export function ReplyReport() {
 
     async function onSubmit(data) {
         try {
-            const { username, staffName, about, reply } = data;
+            const { reply, veredit } = data;
 
-            const res = await fetch('/api/delation', {
+            const res = await fetch('/api/staffs/reply-delation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    reply: reply,
-                    approved: true
+                    id: delationId,
+                    vereditDesc: reply,
+                    veredit: veredit
                 })
             });
+            k(false);
             if (res.status === 200) {
                 toast({
-                    title: "Denúncia enviada com sucesso!",
-                    description: "Sua denúncia foi registrada e enviada a nossa equipe, logo logo iremos retornar com uma resposta"
+                    title: "Denúncia respondida com sucesso!",
+                    description: "A denúncia foi registrada e enviada! Você deve realizar as punições cabiveis agora!"
                 });
             } else {
                 toast({

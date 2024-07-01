@@ -29,3 +29,19 @@ export async function getUser() {
     else
         return;
 }
+
+export async function logout() {
+    const cookieStore = cookies();
+    const hasCookie = cookieStore.has('user')
+    if (hasCookie) {
+        cookieStore.delete('user');
+        redirect('/')
+    }
+}
+
+export async function getStaff() {
+    const data = await getUserInfo();
+    if (!data.staff) {
+        redirect('/dashboard');
+    }
+}

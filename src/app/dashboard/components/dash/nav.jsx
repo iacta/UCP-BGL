@@ -44,7 +44,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 
 import { SignOut } from "@phosphor-icons/react";
-import { getUserInfo } from '../../user';
+import { getUserInfo, logout } from '../../user';
 import { CircularProgress } from './circularprogress';
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -53,12 +53,14 @@ export function Nav() {
     const navtheme = "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-green-500 hover:text-white focus:bg-green-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-green-700 data-[state=open]:bg-green-700";
     const iconTextTheme = "pl-3"
     const [user, setUser] = useState(null);
-
+    const [staff, setStaff] = useState(false);
     useEffect(() => {
         async function fetchUserInfo() {
             try {
                 const userInfo = await getUserInfo();
+                console.log(userInfo)
                 setUser(userInfo);
+                if (userInfo.staff) setStaff(true);
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -118,6 +120,16 @@ export function Nav() {
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            {staff && (
+                                <Link href="/dashboard/staff" legacyBehavior passHref>
+                                    <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-rose-600 hover:text-white focus:bg-rose-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-rose-700 data-[state=open]:bg-rose-700">
+                                        <Shield size={24} weight="bold" color="#FF1493" />
+                                        <span className={iconTextTheme}>Menu Administrativo</span>
+                                    </NavigationMenuLink>
+                                </Link>
+                            )}
+                        </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
                 <div className="flex items-center ml-auto">
@@ -126,21 +138,17 @@ export function Nav() {
                         <DropdownMenuTrigger>
                             <div className="flex items-center space-x-2 pr-5">
                                 <div className="w-14 h-14 overflow-hidden rounded-full border-none bg-gray-700">
-                                    <img src="https://assets.open.mp/assets/images/skins/2.png" alt="Avatar" className="object-cover object-top w-full h-full" />
+                                    <img src={`https://assets.open.mp/assets/images/skins/${user.skinID}.png`} alt="Avatar" className="object-cover object-top w-full h-full" />
                                 </div>
                                 <CaretLeft size={24} />
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-gray-800 text-white">
+                        <DropdownMenuContent className="bg-gray-950 border-none text-white">
                             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <h1 className="pl-2 font-bold text-sm text-red-700">Online: Não</h1>
-                            <DropdownMenuItem>Meu Perfil</DropdownMenuItem>
-                            <DropdownMenuItem>Billing</DropdownMenuItem>
-                            <DropdownMenuItem>Team</DropdownMenuItem>
-                            <DropdownMenuItem>Subscription</DropdownMenuItem>
+                            <DropdownMenuLabel>Online: não</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => logout()} className="data-[active]:bg-red-600 data-[state=open]:bg-red-600">
                                 <SignOut size={25} />
                                 Log out
                             </DropdownMenuItem>
@@ -150,7 +158,7 @@ export function Nav() {
             </div>
 
 
-            <div className="md:hidden fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 p-2 flex justify-center items-center space-x-4 rounded-t-lg shadow-lg w-11/12 max-w-md">
+            <div className="md:hidden z-50 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 p-2 flex justify-center items-center space-x-4 rounded-t-lg shadow-lg w-11/12 max-w-md">
                 <NavigationMenu className="flex-grow">
                     <NavigationMenuList className="flex">
                         <NavigationMenuItem>
@@ -181,12 +189,19 @@ export function Nav() {
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
+                        {staff && (
+                            <Link href="/dashboard/staff" legacyBehavior passHref>
+                                <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-rose-600 hover:text-white focus:bg-rose-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-rose-700 data-[state=open]:bg-rose-700">
+                                    <Shield size={24} weight="bold" color="#FF1493" />
+                                </NavigationMenuLink>
+                            </Link>
+                        )}
                     </NavigationMenuList>
                 </NavigationMenu>
                 <DropdownMenu>
                     <DropdownMenuTrigger>
                         <div className="flex items-center">
-                            <img src="https://assets.open.mp/assets/images/skins/2.png" alt="Avatar" className="w-10 h-10 bg-gray-700 rounded-full object-cover object-top mr-2" />
+                            <img src={`https://assets.open.mp/assets/images/skins/${user.skinID}.png`} alt="Avatar" className="w-10 h-10 bg-gray-700 rounded-full object-cover object-top mr-2" />
                         </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-gray-800 text-white">
@@ -208,7 +223,8 @@ export function Nav() {
                     <Notify />
                 </div>
             </div>
-            <div className="md:hidden h-24"></div>
+            <div className="md:hidden h-24"></div> {}
+
         </>
     );
 }

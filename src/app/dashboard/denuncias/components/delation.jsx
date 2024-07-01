@@ -45,12 +45,12 @@ export function Delation() {
                                 <DialogHeader>
                                     <DialogTitle>Criar Denúncia</DialogTitle>
                                     <DialogDescription className="pt-5 space-x-3">
-                                        <Button className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md">
-                                            <Link href="/dashboard/denuncias/minhas-denuncias" className="flex items-center">
+                                        <DialogClose asChild>
+                                            <Button className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md" onClick={() => closeFirstDialogAndOpenSecond('Jogador')}>
                                                 <User size={24} weight="bold" />
                                                 <span className="ml-2 font-bold">Denunciar um Jogador</span>
-                                            </Link>
-                                        </Button>
+                                            </Button>
+                                        </DialogClose>
                                         <DialogClose asChild>
                                             <Button className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md" onClick={() => closeFirstDialogAndOpenSecond('Staff')}>
                                                 <Shield size={24} weight="bold" />
@@ -75,7 +75,7 @@ export function Delation() {
                                 <DialogHeader>
                                     <DialogTitle>Denunciar {reportType}</DialogTitle>
                                     <DialogDescription>
-                                        {reportType === "Staff" ? <NewDenunciaStaff k={setIsSecondDialogOpen}/> : <NewDenuncia />}
+                                        {reportType === "Staff" ? <NewDenunciaStaff k={setIsSecondDialogOpen} /> : <NewDenuncia  k={setIsSecondDialogOpen}/>}
                                     </DialogDescription>
                                 </DialogHeader>
                             </DialogContent>

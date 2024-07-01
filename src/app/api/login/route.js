@@ -19,7 +19,10 @@ export async function POST(request) {
     if (user && await bcrypt.compare(password, user.password)) {
         const info = {
             nick: username,
-            createdAt: user.createdAt
+            createdAt: user.createdAt,
+            skinID: user.skinID,
+            helper: user.helper,
+            staff: user.staffLevel
         }
         cookies().set('user', JSON.stringify(info), { secure: true })
         console.log('Password match');

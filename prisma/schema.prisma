@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,10 +11,32 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(uuid())
-  nick      String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  nick         String   @unique
+  password     String
+  socio        String   @default("")
+  moedas       Int      @default(0)
+  uLogin       String   @default("30/05/2024 - 12:12 PM")
+  skinID       Int      @default(264)
+  telefone     Int      @default(0)
+  staffLevel   Int      @default(0)
+  helper       Boolean  @default(false)
+  nivel        Int      @default(0)
+  respeitos    Int      @default(0)
+  horasJogadas Int      @default(0)
+  money        Int      @default(0)
+  bank         Int      @default(0)
+  ouros        Int      @default(0)
+  fabrica      Int      @default(0)
+  empresa      Int      @default(0)
+  propriedade  Int      @default(0)
+  casa         Int      @default(0)
+  casaAlugada  Int      @default(0)
+  matou        Int      @default(0)
+  morreu       Int      @default(0)
+  kd           Float    @default(0.0)
+  createdAt    DateTime @default(now())
+  Staff        Staff?   @relation
 }
 
 model Promotion {
@@ -27,16 +46,56 @@ model Promotion {
   price       Float
   expiresAt   DateTime
 }
+
 model Delation {
-  id          Int      @id @default(autoincrement())
-  title       String
-  relator     String
-  reason      String
-  description String
-  accused     String
-  orgRelator  String
-  orgAccused  String
-  veredit     String   @default("none")
-  staff       Boolean
-  createdAt   DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  title              String
+  relator            String
+  reason             String
+  description        String
+  accused            String
+  orgRelator         String
+  orgAccused         String
+  veredit            String   @default("none")
+  vereditDescription String   @default("none")
+  adminReply         String   @default("none")
+  staff              Boolean
+  createdAt          DateTime @default(now())
+  resolved           String   @default("none")
+}
+
+model Revision {
+  id                 Int      @id @default(autoincrement())
+  title              String
+  relator            String
+  reason             String
+  description        String
+  staff              String
+  veredit            String   @default("none")
+  vereditDescription String   @default("none")
+  adminReply         String   @default("none")
+  createdAt          DateTime @default(now())
+  resolved           String   @default("none")
+}
+
+model Staff {
+  id           Int      @id @default(autoincrement())
+  nick         String   @unique
+  level        Int
+  cargo        String
+  funcao       String
+  atendimentos Int      @default(0)
+  warns        Int      @default(0)
+  createdAt    DateTime @default(now())
+  Warns        Warn[]
+  User         Users    @relation(fields: [nick], references: [nick])
+}
+
+model Warn {
+  id        Int      @id @default(autoincrement())
+  reason    String
+  issuedBy  String
+  createdAt DateTime @default(now())
+  staffID   Int
+  staff     Staff    @relation(fields: [staffID], references: [id])
 }

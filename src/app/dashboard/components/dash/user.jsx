@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -24,10 +25,60 @@ import {
     House,
     Skull,
     HeartHalf,
-    Ranking
+    Ranking,
+    Sparkle,
+    Cube,
+    Lightning,
+    Crown,
+    SketchLogo
 } from "@phosphor-icons/react";
+import { Skeleton } from "@/components/ui/skeleton";
 const divTheme = ""
+import { useState, useEffect } from "react";
 export function Perfil() {
+    const [infoUser, setInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch(`/api/getUserInfo`);
+                const data = await res.json();
+                console.log(data);
+                setInfo(data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <main className="text-white">
+                <div className="px-4 md:px-10 py-10">
+                    <div className="flex flex-col md:flex-row md:space-x-10">
+                        <div className="w-full md:w-1/3 mb-10 md:mb-0 flex justify-center">
+                            <div className="flex flex-col items-center space-y-4">
+                                <Skeleton className="h-[900px] w-[200px] sm:w-[250px]" />
+                            </div>
+                        </div>
+
+                        <div className="w-full md:w-2/3 flex flex-col space-y-4">
+                            <div className="space-y-3">
+                                <Skeleton className="h-72 w-full" />
+                                <Skeleton className="h-72 w-full" />
+                                <Skeleton className="h-72 w-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+
     return (
         <div className="px-4 md:px-10 py-10">
             <div className="flex flex-col md:flex-row md:space-x-10">
@@ -35,11 +86,11 @@ export function Perfil() {
                     <Card className="bg-gray-900  border-none shadow-md shadow-gray-400 text-white w-full md:w-auto">
                         <CardHeader className="text-center">
                             <div className="bg-gray-950 p-4 rounded-md">
-                                <CardTitle>iacta</CardTitle>
+                                <CardTitle>{infoUser.nick}</CardTitle>
                                 <CardDescription>Novato</CardDescription>
                                 <div className="flex justify-center items-center py-4">
                                     <div className="w-42 h-42 overflow-hidden border-none bg-transparent">
-                                        <img src="https://assets.open.mp/assets/images/skins/2.png" alt="Avatar" className="w-full h-full object-contain" />
+                                        <img src={`https://assets.open.mp/assets/images/skins/${infoUser.skinID}.png`} alt="Avatar" className="w-full h-full object-contain" />
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +99,7 @@ export function Perfil() {
                             <div className="flex flex-col items-center bg-gray-950 p-4 rounded-md space-y-4">
                                 <div className="flex items-center bg-green-500 font-bold text-white p-2 rounded-md">
                                     <span className="mr-2">Nível</span>
-                                    <span>0</span>
+                                    <span>{infoUser.nivel}</span>
                                 </div>
                                 <div className="w-full flex flex-col items-center">
                                     <div className="w-full bg-gray-800 rounded-full h-2.5 flex items-center">
@@ -56,16 +107,17 @@ export function Perfil() {
                                     </div>
                                     <div className="w-full flex justify-between text-gray-300 mt-2 text-sm">
                                         <span>Respeitos</span>
-                                        <span>0/12</span>
+                                        <span>{infoUser.respeitos}/??</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-center bg-gray-950 p-4 rounded-md space-y-4">
-                                VOCÊ NÃO É UM SÓCIO
+                            <div className="flex items-center justify-center bg-sky-400 font-bold text-white p-2 rounded-md">
+                                <Sparkle size={32} weight="bold" /> <p className="pl-2">VIP COMUM</p>
+                                <span className="pl-2"></span>
                             </div>
                             <div className="flex items-center justify-center bg-green-600 font-bold text-white p-2 rounded-md">
                                 <CurrencyCircleDollar size={32} weight="bold" color="#0CFF00" className="" /> <p className="pl-2">Moedas VIP</p>
-                                <span className="pl-2">0</span>
+                                <span className="pl-2">{infoUser.moedas}</span>
                             </div>
                             <div className="flex items-center bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <Clock size={32} weight="bold" className="" /> <p className="pl-2">0</p>
@@ -73,11 +125,12 @@ export function Perfil() {
                             </div>
                             <div className="flex items-center bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <Phone size={32} weight="bold" className="" /> <p className="pl-2 text-green-400">Telefone</p>
-                                <span className="pl-3">Nenhum</span>
+                                {infoUser.telefone === 0 ? (<span className="pl-3">Nenhum</span>) : (<span className="pl-3">{infoUser.telefone}</span>)
+                                }
                             </div>
                         </CardContent>
                         <CardFooter className="text-center">
-                            <p className="font-bold text-gray-300">Último Login: 30/05/2024 - 12:12 PM</p>
+                            <p className="font-bold text-gray-300">Último Login: {infoUser.uLogin}</p>
                         </CardFooter>
                     </Card>
                 </div>
@@ -91,28 +144,28 @@ export function Perfil() {
                                     <CurrencyDollar size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Dinheiro</p>
                                 </div>
-                                <p>$5.000</p>
+                                <p>${infoUser.money}</p>
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <Bank size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Banco</p>
                                 </div>
-                                <p>$5.000</p>
+                                <p>${infoUser.bank}</p>
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <Vault size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Ouros</p>
                                 </div>
-                                <p>$5.000</p>
+                                <p>${infoUser.ouros}</p>
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <Wallet size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Balanço Total</p>
                                 </div>
-                                <p>$5.000</p>
+                                <p>${infoUser.money + infoUser.bank}</p>
                             </div>
                         </div>
                     </div>
@@ -125,28 +178,28 @@ export function Perfil() {
                                     <Factory size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Fábrica</p>
                                 </div>
-                                <p>Nenhuma</p>
+                                {infoUser.fabrica === 0 ? (<p className="pl-3">Nenhuma</p>) : (<p className="pl-3">{infoUser.fabrica}</p>)}
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <BuildingOffice size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Empresa</p>
                                 </div>
-                                <p>Nenhuma</p>
+                                {infoUser.empresa === 0 ? (<p className="pl-3">Nenhuma</p>) : (<p className="pl-3">{infoUser.empresa}</p>)}
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <House size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Casa</p>
                                 </div>
-                                <p>Nenhuma</p>
+                                {infoUser.casa === 0 ? (<p className="pl-3">Nenhuma</p>) : (<p className="pl-3">{infoUser.casa}</p>)}
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <House size={32} weight="duotone" className="mr-2" />
                                     <p className="text-green-400">Casa Alugada</p>
                                 </div>
-                                <p>Nenhuma</p>
+                                {infoUser.casaAlugada === 0 ? (<p className="pl-3">Nenhuma</p>) : (<p className="pl-3">{infoUser.casaAlugada}</p>)}
                             </div>
                         </div>
                     </div>
@@ -159,21 +212,21 @@ export function Perfil() {
                                     <HeartHalf size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Matou</p>
                                 </div>
-                                <p>10</p>
+                                <p>{infoUser.matou}</p>
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <Skull size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">Morreu</p>
                                 </div>
-                                <p>1</p>
+                                <p>{infoUser.morreu}</p>
                             </div>
                             <div className="flex justify-between bg-gray-950 font-bold text-white p-4 rounded-md">
                                 <div className="flex items-center">
                                     <Ranking size={32} weight="bold" className="mr-2" />
                                     <p className="text-green-400">KD Geral</p>
                                 </div>
-                                <p>100.0%</p>
+                                <p>{infoUser.kd}%</p>
                             </div>
                         </div>
                     </div>
@@ -184,7 +237,7 @@ export function Perfil() {
 
                         </div>
                     </div> */}
-                    
+
                 </div>
             </div>
         </div >
