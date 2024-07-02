@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 import { getUserInfo } from '@/app/dashboard/user';
-import { cookies } from 'next/headers'
 
 export async function GET(request) {
     try {
@@ -10,11 +9,12 @@ export async function GET(request) {
             where: {
                 nick: user.nick
             }
-        })
-        prisma.$disconnect();
+        });
         return NextResponse.json(info);
     } catch (error) {
         console.error('Erro ao pegar informações:', error);
-        throw error;
+        return NextResponse.error();
+    } finally {
+        await prisma.$disconnect();
     }
 }
