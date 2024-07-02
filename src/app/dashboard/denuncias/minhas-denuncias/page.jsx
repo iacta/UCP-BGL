@@ -30,6 +30,19 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { NavHome } from './components/nav';
 
+export async function getServerSideProps(context) {
+    const res = await fetch('/api/getUserInfo', {
+        headers: {
+            Cookie: context.req.headers.cookie,
+        },
+    });
+    const userInfo = await res.json();
+
+    return {
+        props: { userInfo },
+    };
+}
+
 const SearchBar = ({ onChange }) => {
     return (
         <div className="mb-4">
@@ -266,7 +279,7 @@ export default function MinhasDenuncias() {
     if (loading) {
         return (
             <main className="text-white">
-                <Nav />
+                <Nav userInfo={userInfo} />
                 <div className="flex justify-center items-center">
                     <div className="flex flex-col space-y-3">
                         <div className='flex flex-row space-x-1'>
@@ -292,7 +305,7 @@ export default function MinhasDenuncias() {
 
     return (
         <main className="text-white">
-            <Nav />
+            <Nav userInfo={userInfo} />
             <div className="pl-4 sm:pl-10 pt-5">
                 <NavHome />
                 <div className="flex justify-center items-center -mt-10">

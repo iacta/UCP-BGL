@@ -4,11 +4,24 @@ import React from "react";
 import { Nav, NavHome } from './components/dash/nav';
 import { Perfil, Perfil2 } from './components/dash/user';
 
-export default function HomePage() {
+export async function getServerSideProps(context) {
+    const res = await fetch('/api/getUserInfo', {
+        headers: {
+            Cookie: context.req.headers.cookie,
+        },
+    });
+    const userInfo = await res.json();
+
+    return {
+        props: { userInfo }, 
+    };
+}
+
+export default function HomePage({userInfo}) {
     return (
         <>
             <main className="text-white">
-                <Nav />
+            <Nav userInfo={userInfo} />
 {/*                 <div className="flex justify-center items-center mt-2">
                     <Perfil2 />
                 </div>

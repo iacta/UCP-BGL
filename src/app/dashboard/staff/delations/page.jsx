@@ -19,6 +19,19 @@ import { NavHome } from '../components/nav';
 import { Skeleton } from "@/components/ui/skeleton"
 import { DenunciasList, DenunciasResolvedList } from "./components/list"
 
+export async function getServerSideProps(context) {
+    const res = await fetch('/api/getUserInfo', {
+        headers: {
+            Cookie: context.req.headers.cookie,
+        },
+    });
+    const userInfo = await res.json();
+
+    return {
+        props: { userInfo }, 
+    };
+}
+
 export default function Delations() {
     const [denuncias, setDenuncias] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -44,7 +57,7 @@ export default function Delations() {
     if (loading) {
         return (
             <main className="text-white">
-                <Nav />
+                <Nav userInfo={userInfo} />
                 <div className="pl-4 sm:pl-10 pt-5">
                     <NavHome />
                     <div className="flex justify-center items-center mt-8 sm:-mt-64">
@@ -74,7 +87,7 @@ export default function Delations() {
 
     return (
         <main className="text-white">
-            <Nav />
+            <Nav userInfo={userInfo} />
             <div className="pl-4 sm:pl-10 pt-5">
                 <NavHome />
                 <div className="flex justify-center items-center mt-8 sm:-mt-64">

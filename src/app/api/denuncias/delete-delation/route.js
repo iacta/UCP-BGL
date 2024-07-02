@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 import { getUserInfo } from '@/app/dashboard/user';
 import fs from 'fs';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid'
 
 export async function DELETE(request) {
     try {
