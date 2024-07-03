@@ -7,9 +7,9 @@ import fs from 'fs';
 import path from 'path';
 
 export async function DELETE(request) {
+    const user = await getUserInfo();
     try {
         const { delationId, reporterId } = await request.json();
-        const user = await getUserInfo();
         const del = await prisma.delation.delete({
             where: {
                 id: delationId,
@@ -34,14 +34,11 @@ async function deleteFolderRecursive(folderPath) {
             const curPath = path.join(folderPath, file);
             const stat = await fs.promises.lstat(curPath);
             if (stat.isDirectory()) {
-                // Recursivamente deleta subdiretórios
                 await deleteFolderRecursive(curPath);
             } else {
-                // Deleta arquivo
                 await fs.promises.unlink(curPath);
             }
         }));
-        // Deleta o diretório vazio
         await fs.promises.rmdir(folderPath);
     }
 }
