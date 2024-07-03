@@ -1,63 +1,61 @@
-'use server'
-
+// functions/user.js
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-
 export async function getUserInfo() {
     try {
-        const cookieStore = cookies();
-        const userCookie = cookieStore.get('user');
+        const cookieStore = cookies()
+        const userCookie = cookieStore.get('user')
 
         if (userCookie && typeof userCookie.value === 'string') {
-            const user = JSON.parse(userCookie.value);
-            return user;
-
+            const user = JSON.parse(userCookie.value)
+            return user
         } else {
-            redirect('/');
+            redirect('/')
         }
     } catch (error) {
-        console.error('Error parsing user cookie:', error);
-        redirect('/');
+        console.error('Error parsing user cookie:', error)
+        redirect('/')
     }
 }
 
 export async function getUser() {
     try {
-        const cookieStore = cookies();
+        const cookieStore = cookies()
         const hasCookie = cookieStore.has('user')
-        if (hasCookie)
-            return redirect('/dashboard');
-        else
-            return;
+        if (hasCookie) {
+            redirect('/dashboard')
+        } else {
+            return
+        }
     } catch (error) {
-        console.error('Error parsing user cookie:', error);
-        redirect('/');
+        console.error('Error parsing user cookie:', error)
+        redirect('/')
     }
 }
 
 export async function logout() {
     try {
-        const cookieStore = cookies();
+        const cookieStore = cookies()
         const hasCookie = cookieStore.has('user')
         if (hasCookie) {
-            cookieStore.delete('user');
+            cookieStore.delete('user')
             redirect('/')
         }
     } catch (error) {
-        console.error('Error parsing user cookie:', error);
-        redirect('/');
+        console.error('Error parsing user cookie:', error)
+        redirect('/')
     }
 }
 
 export async function getStaff() {
     try {
-        const data = await getUserInfo();
+        const data = await getUserInfo()
         if (!data.staff) {
-            redirect('/dashboard');
+            redirect('/dashboard')
         }
     } catch (error) {
-        console.error('Error parsing user cookie:', error);
-        redirect('/');
+        console.error('Error parsing user cookie:', error)
+        redirect('/')
     }
 }
