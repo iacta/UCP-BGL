@@ -5,43 +5,59 @@ import { redirect } from 'next/navigation'
 
 
 export async function getUserInfo() {
-    const cookieStore = cookies();
-    const userCookie = cookieStore.get('user');
+    try {
+        const cookieStore = cookies();
+        const userCookie = cookieStore.get('user');
 
-    if (userCookie && typeof userCookie.value === 'string') {
-        try {
+        if (userCookie && typeof userCookie.value === 'string') {
             const user = JSON.parse(userCookie.value);
             return user;
-        } catch (error) {
-            console.error('Error parsing user cookie:', error);
+
+        } else {
             redirect('/');
         }
-    } else {
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
         redirect('/');
     }
 }
 
 export async function getUser() {
-    const cookieStore = cookies();
-    const hasCookie = cookieStore.has('user')
-    if (hasCookie)
-        return redirect('/dashboard');
-    else
-        return;
+    try {
+        const cookieStore = cookies();
+        const hasCookie = cookieStore.has('user')
+        if (hasCookie)
+            return redirect('/dashboard');
+        else
+            return;
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
+        redirect('/');
+    }
 }
 
 export async function logout() {
-    const cookieStore = cookies();
-    const hasCookie = cookieStore.has('user')
-    if (hasCookie) {
-        cookieStore.delete('user');
-        redirect('/')
+    try {
+        const cookieStore = cookies();
+        const hasCookie = cookieStore.has('user')
+        if (hasCookie) {
+            cookieStore.delete('user');
+            redirect('/')
+        }
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
+        redirect('/');
     }
 }
 
 export async function getStaff() {
-    const data = await getUserInfo();
-    if (!data.staff) {
-        redirect('/dashboard');
+    try {
+        const data = await getUserInfo();
+        if (!data.staff) {
+            redirect('/dashboard');
+        }
+    } catch (error) {
+        console.error('Error parsing user cookie:', error);
+        redirect('/');
     }
 }
