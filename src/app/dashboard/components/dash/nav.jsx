@@ -49,11 +49,40 @@ import { CircularProgress } from './circularprogress';
 import { Skeleton } from "@/components/ui/skeleton"
 
 
-const Nav = ({ userInfo }) => {
+export function Nav() {
     const navtheme = "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-green-500 hover:text-white focus:bg-green-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-green-700 data-[state=open]:bg-green-700";
     const iconTextTheme = "pl-3"
-    const [user, setUser] = useState(userInfo);
-    const [staff, setStaff] = useState(userInfo?.staff ?? false);
+    const [user, setUser] = useState(null);
+    const [staff, setStaff] = useState(false);
+    useEffect(() => {
+        async function fetchUserInfo() {
+            try {
+                const userInfo = await getUserInfo();
+                console.log(userInfo)
+                setUser(userInfo);
+                if (userInfo.staff) setStaff(true);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        fetchUserInfo();
+    }, []);
+
+    if (!user) {
+        return <>
+            <div className="absolute left-20 -mt-40">
+                <img src="/bgl.png" alt="Logo" className="h-52 w-64" />
+            </div>
+            <div className="flex flex-grow flex-row ml-10 mt-32 bg-gray-900 w-10/12 p-1 rounded-md">
+                <NavigationMenu className="flex-grow">
+                    <NavigationMenuList className="flex space-x-2">
+                        <Skeleton className="h-10 w-[900px] bg-gray-600" />
+                    </NavigationMenuList>
+                </NavigationMenu>
+            </div>
+        </>
+    }
 
     return (
         <>
