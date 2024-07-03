@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from 'react';
 import { coming } from "./fonts";
 import { Login } from './login';
