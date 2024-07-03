@@ -7,7 +7,6 @@ import { Login } from './login';
 import { getUser } from './dashboard/user';
 
 export default function Home() {
-  getUser();
   return (
     <main className={`relative min-h-screen text-black ${coming.className}`}>
       <div className="relative z-10">
