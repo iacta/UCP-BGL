@@ -16,9 +16,19 @@ export function NavHome({ id }) {
     const select = id === 0 ? true : false;
     const navTheme = "lg:mt-3 md:-mt-32 md:ml-5 bg-gray-900 text-white p-8 group inline-flex h-10 lg:w-60 md:w-max items-center justify-center rounded-lg text-sm font-bold transition-colors hover:bg-green-500 hover:text-white focus:bg-green-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50";
     const iconTextTheme = "pl-3 hidden lg:flex";
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        getStaff();
-    }, [])
+      async function checkUser() {
+        await getStaff();
+        setLoading(false);
+      }
+      checkUser();
+    }, []);
+  
+    if (loading) {
+      return <main></main>;
+    }
     return (
         <NavigationMenu>
             <NavigationMenuList className="flex flex-row lg:flex-col md:flex-row md:items-center md:justify-center">

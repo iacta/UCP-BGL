@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { getUserInfo } from "@/app/dashboard/user";
 
 export async function GET() {
+    const user = await getUserInfo();
     try {
-        const user = await getUserInfo();
         const res = await prisma.staff.findUnique({
             where: {
                 nick: user.nick

@@ -9,9 +9,9 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request) {
+    const user = await getUserInfo();
     try {
         const { id, veredit, vereditDesc} = await request.json();
-        const user = await getUserInfo();
         const updateDelation = await prisma.delation.update({
             where: {
                 id: id,

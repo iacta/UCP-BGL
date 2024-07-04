@@ -5,8 +5,8 @@ import prisma from '@/lib/prisma';
 import { getUserInfo } from '@/app/dashboard/user';
 
 export async function POST(request) {
+    const info = await getUserInfo();
     try {
-        const info = await getUserInfo();
         const { value } = await request.json();
 
         if (isNaN(value) || value <= 0) {
