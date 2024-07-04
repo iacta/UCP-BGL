@@ -10,7 +10,7 @@ export async function POST(request) {
         const { id, value } = await request.json();
 
         const client = new MercadoPagoConfig({ accessToken: process.env.MP_TOKEN });
-
+        const preference = new Preference(client);
 
         const response = await preference.create({
             body: {
@@ -32,8 +32,8 @@ export async function POST(request) {
 
         console.log(response.id);
         const jsonData = {
-            id: id,
-            time: time
+            id: "Moedas Vip's",
+            value: value
         }
         const fiftyMinutesInMilliseconds = 50 * 60 * 1000;
         const expires = new Date(Date.now() + fiftyMinutesInMilliseconds);

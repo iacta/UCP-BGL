@@ -1,8 +1,5 @@
 'use client';
-
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-
 import {
     Dialog,
     DialogContent,
@@ -27,14 +24,9 @@ import {
 } from "@/components/ui/form";
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react'
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast"
-import { IMaskInput } from 'react-imask';
-
-
-
-
+require('dotenv').config()
 
 const PromoBox = ({ title, description1, description2 }) => {
     return (
@@ -63,13 +55,13 @@ export function Store() {
     const { toast } = useToast();
 
     const formSchema = z.object({
-        value: z.number().int().min(1000),
+        quanty: z.number().int().min(1000),
     });
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            value: 0,
+            quanty: 1000,
         },
     });
 
@@ -79,7 +71,8 @@ export function Store() {
 
     async function onSubmit(data) {
         try {
-            const { value } = data;
+            console.log(data)
+            const { quanty } = data;
 
             const res = await fetch('/api/payment', {
                 method: 'POST',
@@ -88,14 +81,14 @@ export function Store() {
                 },
                 body: JSON.stringify({
                     id: "Moedas Vip's",
-                    value: value,
+                    value: quanty,
                 })
             });
 
             if (res.status === 200) {
-                const data = await res.json();
-                console.log(data);
-                setID(data);
+                const responseData = await res.json();
+                console.log(responseData);
+                setID(responseData);
                 console.log('Teste ID COMPRA ', idCompra);
                 setDialogOpen(true);
             } else {
@@ -117,7 +110,7 @@ export function Store() {
     }
 
     useEffect(() => {
-        initMercadoPago('TEST-f547d93f-3fe0-4fa8-9cb6-2d7e20bafe6e', { locale: 'pt-BR' });
+        initMercadoPago(process.env.MP_TOKEN_PUBLIC, { locale: 'pt-BR' });
     }, []);
 
     return (
@@ -152,15 +145,15 @@ export function Store() {
                                     <DialogContent className="bg-gray-950 p-4 rounded-md shadow-md">
                                         <DialogHeader>
                                             <DialogTitle className={`text-green-400`}>Moedas Vip's</DialogTitle>
-                                            <DialogDescription>Saiba quais são os benefícios desse plano!</DialogDescription>
+                                            <DialogDescription>Saiba quais são os benefícios!</DialogDescription>
                                         </DialogHeader>
                                         <ScrollArea className="max-h-80">
                                             <div className="flex flex-wrap justify-between">
-                                                <div className="w-full sm:w-auto">
-                                                    <h2 className="text-lg font-bold">Benefícios ao ativar o plano por 30 dias:</h2>
-                                                </div>
-                                                <div className="w-full sm:w-auto">
-                                                    <h2 className="text-lg font-bold">Outros Benefícios:</h2>
+                                                <div className="w-full sm:w-auto space-y-5">
+                                                    <h2 className="text-lg font-bold">Benefícios ao adquirir Moedas Vip's:</h2>
+                                                    <p className="text-base font-semibold text-green-300">
+                                                        Além de ajudar a manter o servidor on-line, você poderá adquirir diversos itens únicos ou ativar planos VIP'S no nosso servidor.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </ScrollArea>
@@ -185,18 +178,19 @@ export function Store() {
                                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                                         <FormField
                                                             control={form.control}
-                                                            name="value"
+                                                            name="quanty"
                                                             render={({ field }) => (
                                                                 <FormItem>
-                                                                    <FormLabel className="value">Informe a quantidade que deseja:</FormLabel>
+                                                                    <FormLabel className="quanty">Informe a quantidade que deseja:</FormLabel>
                                                                     <FormControl>
                                                                         <Input
+                                                                            type="number"
                                                                             placeholder=""
                                                                             className="bg-gray-900 rounded-md"
                                                                             {...field}
                                                                             onChange={(e) => {
                                                                                 const formattedValue = formatNumber(e.target.value.replace(/\./g, ''));
-                                                                                form.setValue('value', formattedValue);
+                                                                                form.setValue('quanty', formattedValue);
                                                                                 field.onChange(formattedValue);
                                                                             }}
                                                                         />
@@ -354,129 +348,6 @@ export function VehicleCard({ vehicleID, vehicleName }) {
         </div>
     )
 }
-
-export function VehicleRCCard({ vehicleID, vehicleName }) {
-    const [idCompra, setID] = useState(false);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const { toast } = useToast();
-
-    async function onSubmit() {
-        try {
-
-            const res = await fetch('/api/payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: vehicleName,
-                })
-            });
-            if (res.status === 200) {
-                const data = await res.json();
-                console.log(data);
-                setID(data);
-                console.log('Teste ID COMPRA ', idCompra);
-                setDialogOpen(true)
-
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Oops! Algo deu errado!",
-                    description: "Tente novamente"
-                });
-            }
-
-        } catch (error) {
-            console.error('Erro ao registrar compra:', error);
-            toast({
-                variant: "destructive",
-                title: "Oops! Algo deu errado!",
-                description: "Erro ao registrar compra. Tente novamente mais tarde."
-            });
-        }
-    }
-
-    return (
-        <div className="flex flex-col items-center bg-gray-800 p-4 rounded-md space-y-4">
-            <div className="w-36 h-36 overflow-hidden rounded-md flex items-center justify-center">
-                <img
-                    src={`/rc/${vehicleName}.png`}
-                    alt="Vehicle"
-                    className="object-cover w-full h-full"
-                />
-            </div>
-            <div className="flex justify-center space-x-4">
-                <Dialog>
-                    <DialogTrigger className="bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-transform transform hover:scale-105">
-                        Saiba Mais
-                    </DialogTrigger>
-                    <DialogContent className="bg-gray-800 p-6 rounded-md shadow-md">
-                        <DialogHeader>
-                            <DialogTitle className="text-white text-xl font-bold">Veículo</DialogTitle>
-                            <DialogDescription className="text-gray-300">Saiba mais sobre os benefícios deste veículo.</DialogDescription>
-                        </DialogHeader>
-                        <ScrollArea className="max-h-80 mt-4">
-                            <div className="space-y-4">
-                                <div>
-                                    <h2 className="text-lg text-white font-bold">Benefícios ao ativar o plano por 30 dias:</h2>
-                                    <div className="bg-gray-900 p-3 rounded-md shadow-sm">
-                                        <p className="text-gray-300">Informações sobre o veículo:</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </ScrollArea>
-                    </DialogContent>
-                </Dialog>
-                <Button asChild className="bg-green-600 text-white font-bold py-2 px-4 rounded-md transition-transform transform hover:scale-105">
-                    <Link href="/">Adquirir</Link>
-                </Button>
-            </div>
-        </div>
-    )
-}
-
-
-export function FamilyCard({ plan, borderColor, buttonColor, textcolor, linkHref }) {
-
-    return (
-        <div className={`bg-gray-900 border-r-4 ${borderColor} font-bold text-white p-4 rounded-md flex flex-col justify-between w-full`}>
-            <div>
-                <div className="flex justify-center items-center">
-                    <h1>{plan}</h1>
-                </div>
-                <div className="flex justify-center pt-2 space-x-5">
-                    <Dialog>
-                        <DialogTrigger className={`${buttonColor} font-bold p-3 rounded-md`}>
-                            Saiba Mais
-                        </DialogTrigger>
-                        <DialogContent className="bg-gray-950 p-4 rounded-md shadow-md">
-                            <DialogHeader>
-                                <DialogTitle className={`${textcolor}`}>{plan}</DialogTitle>
-                                <DialogDescription>Saiba quais são os benefícios desse plano!</DialogDescription>
-                            </DialogHeader>
-                            <ScrollArea className="max-h-80">
-                                <div className="flex flex-wrap justify-between">
-                                    <div className="w-full sm:w-auto">
-                                        <h2 className="text-lg font-bold">Benefícios ao ativar o plano por 30 dias:</h2>
-
-                                    </div>
-                                    <div className="w-full sm:w-auto">
-                                        <h2 className="text-lg font-bold">Outros Benefícios:</h2>
-
-                                    </div>
-                                </div>
-                            </ScrollArea>
-                        </DialogContent>
-                    </Dialog>
-                    <Button asChild className={`${buttonColor} font-bold p-6`}>
-                        <Link href={linkHref}>Adquirir</Link>
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 
 

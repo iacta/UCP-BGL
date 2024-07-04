@@ -20,10 +20,17 @@ export async function GET(request, { params }) {
             });
 
         } else if (type === 'helper') {
-            staffs = await prisma.users.findMany({
+            staffs = await prisma.staff.findMany({
                 where: {
-                    helper: true
-                }
+                    cargo: 'Helper'
+                },
+                orderBy: {
+                    createdAt: 'asc'
+                },
+                include: {
+                    Warns: true,
+                    User: true
+                },
             });
         } else {
             throw new Error(`Tipo '${type}' não reconhecido.`);

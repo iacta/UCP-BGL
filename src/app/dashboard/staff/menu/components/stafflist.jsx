@@ -114,7 +114,11 @@ export function ShowStaffs({ type }) {
     if (loading) {
         return <Skeleton className="w-[300px] h-[200px] rounded-md" />;
     }
-
+    if(staffs === []){
+        return <div className="flex flex-col items-center justify-center w-full h-full">
+            <p className="text-2xl font-bold">Nenhum administrador encontrado</p>
+        </div>
+    }
     const filteredStaffs = staffs.filter(staff => !["VrauZ", "MaluKo_Free", "zeet", "Zeet"].includes(staff.nick));
 
     return (

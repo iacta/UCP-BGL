@@ -18,8 +18,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose
+} from "@/components/ui/dialog"
 
 export function Login() {
+  const [error, setError] = useState(false)
   const router = useRouter();
   const formSchema = z.object({
     username: z.string().max(20),
@@ -27,9 +37,6 @@ export function Login() {
   })
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
   })
 
   async function onSubmit(data) {
@@ -47,14 +54,14 @@ export function Login() {
     if (res.ok) {
       router.push('/dashboard');
     } else {
-      alert('Login failed');
+      setError(true);
       console.log(await res.json());
     }
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <Card className="w-[350px] bg-gray-900 border-none text-white shadow-lg rounded-md">
+      <Card className="w-[350px] border-none opacity-100 bg-black text-white shadow-lg rounded-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           <CardDescription>Entre com suas credenciais</CardDescription>
@@ -67,9 +74,9 @@ export function Login() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="user">Username</FormLabel>
+                    <FormLabel>Seu nickname</FormLabel>
                     <FormControl>
-                      <Input placeholder="Seu nickname" className="bg-gray-950 rounded-md" {...field} />
+                      <Input type="text" placeholder="Seu nickname" className="bg-gray-950 rounded-md" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -86,16 +93,32 @@ export function Login() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-gray-950 rounded-3xl p-2 w-full">Entrar</Button>
+              <Button type="submit" className="bg-gray-900 rounded-3xl p-2 w-full hover:bg-gray-800">Entrar</Button>
             </form>
           </Form>
           <div className="pt-5">
-            <Button type="submit" className="bg-transparent rounded-lg p-2 w-full hover:text-green-500">Esqueci minha senha</Button>
+            <Button type="submit" className="bg-transparent rounded-lg p-2 w-full hover:text-green-500 hover:bg-gray-950">Esqueci minha senha</Button>
           </div>
         </CardContent>
         <CardFooter>
         </CardFooter>
       </Card>
+      <Dialog open={error} onOpenChange={setError}>
+        <DialogTrigger className={`hidden`}>Open</DialogTrigger>
+        <DialogContent className="bg-gray-950">
+          <DialogHeader>
+            <DialogTitle>Usuário ou senha incorretos!</DialogTitle>
+            <DialogDescription>
+              Você digitou seu usuário ou senha incorretamente, tente novamente!
+            </DialogDescription>
+          </DialogHeader>
+          <DialogClose asChild>
+            <Button className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md">
+              <span className="">Tentar Novamente</span>
+            </Button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }  

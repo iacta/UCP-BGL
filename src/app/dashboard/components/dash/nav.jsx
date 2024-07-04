@@ -240,10 +240,9 @@ export function Notify() {
                     <Bell size={24} weight="bold" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="bg-gray-600 text-white">
-                <h1>Suas notificações ficam aqui</h1>
-                <Separator />
-                <p className="text-sm pt-5">Você não tem novas notificações</p>
+            <PopoverContent className="bg-gray-950 text-white">
+                <h1 className="font-bold text-lg">Suas notificações ficam aqui</h1>
+                <p className="text-base pt-5 text-gray-600 font-semibold">Você não tem novas notificações</p>
             </PopoverContent>
         </Popover>
 

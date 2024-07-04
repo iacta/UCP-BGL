@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Users {
-  id           String   @id @default(uuid())
+  id           Int      @id @default(autoincrement())
   nick         String   @unique
   password     String
   socio        String   @default("")
@@ -88,6 +88,9 @@ model Staff {
   warns        Int      @default(0)
   createdAt    DateTime @default(now())
   Warns        Warn[]
+  horasHoje    Int      @default(0)
+  horasSemanal Int      @default(0)
+  horasTotal   Int      @default(0)
   User         Users    @relation(fields: [nick], references: [nick])
 }
 

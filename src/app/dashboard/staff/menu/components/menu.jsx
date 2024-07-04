@@ -27,12 +27,11 @@ export function MenuStaff() {
                         <ShowStaffs type="staff" />
                     </TabsContent>
                     <TabsContent value="helpers">
-                        Change your password here.
+                        <ShowStaffs type="helpers" />
                     </TabsContent>
                 </Tabs>
             </CardContent>
             <CardFooter>
-                <p>Card Footer</p>
             </CardFooter>
         </Card>
     );
