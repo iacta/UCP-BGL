@@ -7,8 +7,8 @@ import { cookies } from 'next/headers'
 
 export async function POST(request) {
     const { username, password } = await request.json();
-    consle.log(`o Usuário: ${username} está tentando se conectar ao UCP! `)
-    
+    console.log(`o Usuário: ${username} está tentando se conectar ao UCP! `)
+
     const user = await prisma.users.findUnique({
         where: { nick: username },
     });
