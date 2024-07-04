@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata = {
   title: "UCP - Brasil Gamer Life",
   description: "User Control Painel do servidor Brasil Gamer Life.",
-  metadataBase: new URL("https://seusite.com"), // Altere para a URL do seu site
+  metadataBase: new URL("https://ucp-bgl.vercel.app"), 
   openGraph: {
     title: "UCP - Brasil Gamer Life",
     description: "User Control Painel do servidor Brasil Gamer Life.",
