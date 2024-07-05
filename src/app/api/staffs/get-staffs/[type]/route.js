@@ -10,6 +10,11 @@ export async function GET(request, { params }) {
         let staffs;
         if (type === 'staff') {
             staffs = await prisma.staff.findMany({
+                where: {
+                    level: {
+                        gt: 1
+                    }
+                },
                 orderBy: {
                     level: 'desc'
                 },
@@ -19,7 +24,7 @@ export async function GET(request, { params }) {
                 },
             });
 
-        } else if (type === 'helper') {
+        } else if (type === 'helpers') {
             staffs = await prisma.staff.findMany({
                 where: {
                     cargo: 'Helper'
