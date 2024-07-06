@@ -60,8 +60,8 @@ export function Nav() {
             <div className="absolute left-20 -mt-40">
                 <img src="/bgl.png" alt="Logo" className="h-52 w-64" />
             </div>
-            <div className="hidden lg:flex lg:flex-grow lg:justify-center lg:items-center mt-32  w-screen rounded-lg">
-                <div className="w-max flex justify-center bg-gray-900 p-2">
+            <div className="hidden lg:flex lg:flex-grow lg:justify-center lg:items-center mt-32 w-full rounded-lg">
+                <div className="w-max flex justify-center bg-gray-900 p-2 max-w-6xl">
                     <NavigationMenu className="flex-grow max-w-6xl mx-auto">
                         <NavigationMenuList className="flex justify-center space-x-5">
                             {[
@@ -106,25 +106,26 @@ export function Nav() {
                     </div>
                 </div>
             </div>
-            <div className="md:hidden z-50 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 p-2 flex justify-center items-center space-x-4 rounded-t-lg shadow-lg w-11/12 max-w-md">                <NavigationMenu className="flex-grow">
-                <NavigationMenuList className="flex justify-center space-x-4">
-                    {[
-                        { href: "/dashboard", icon: <House size={24} weight="bold" /> },
-                        { href: "/dashboard/loja", icon: <ShoppingCart size={24} weight="bold" color="#0CFF00" /> },
-                        { href: "/dashboard/denuncias", icon: <Gavel size={24} weight="bold" color="#FF0000" />, className: "hover:bg-red-500 focus:bg-red-600 data-[active]:bg-red-700 data-[state=open]:bg-red-700" },
-                        { href: "/dashboard/revisao", icon: <Shield size={24} weight="bold" color="#FF8000" />, className: "hover:bg-amber-500 focus:bg-amber-600 data-[active]:bg-amber-700 data-[state=open]:bg-amber-700" },
-                        staff && { href: "/dashboard/staff", icon: <Shield size={24} weight="bold" color="#FF1493" />, className: "hover:bg-rose-600 focus:bg-rose-600 data-[active]:bg-rose-700 data-[state=open]:bg-rose-700" },
-                    ].filter(Boolean).map(({ href, icon, className }) => (
-                        <NavigationMenuItem key={href}>
-                            <Link href={href} legacyBehavior passHref>
-                                <NavigationMenuLink className={`${navTheme} ${className}`}>
-                                    {icon}
-                                </NavigationMenuLink>
-                            </Link>
-                        </NavigationMenuItem>
-                    ))}
-                </NavigationMenuList>
-            </NavigationMenu>
+            <div className="lg:hidden z-50 fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 p-2 flex justify-center items-center space-x-4 rounded-t-lg shadow-lg w-11/12 max-w-md">
+                <NavigationMenu className="flex-grow">
+                    <NavigationMenuList className="flex justify-center space-x-4">
+                        {[
+                            { href: "/dashboard", icon: <House size={24} weight="bold" /> },
+                            { href: "/dashboard/loja", icon: <ShoppingCart size={24} weight="bold" color="#0CFF00" /> },
+                            { href: "/dashboard/denuncias", icon: <Gavel size={24} weight="bold" color="#FF0000" />, className: "hover:bg-red-500 focus:bg-red-600 data-[active]:bg-red-700 data-[state=open]:bg-red-700" },
+                            { href: "/dashboard/revisao", icon: <Shield size={24} weight="bold" color="#FF8000" />, className: "hover:bg-amber-500 focus:bg-amber-600 data-[active]:bg-amber-700 data-[state=open]:bg-amber-700" },
+                            staff && { href: "/dashboard/staff", icon: <Shield size={24} weight="bold" color="#FF1493" />, className: "hover:bg-rose-600 focus:bg-rose-600 data-[active]:bg-rose-700 data-[state=open]:bg-rose-700" },
+                        ].filter(Boolean).map(({ href, icon, className }) => (
+                            <NavigationMenuItem key={href}>
+                                <Link href={href} legacyBehavior passHref>
+                                    <NavigationMenuLink className={`${navTheme} ${className}`}>
+                                        {icon}
+                                    </NavigationMenuLink>
+                                </Link>
+                            </NavigationMenuItem>
+                        ))}
+                    </NavigationMenuList>
+                </NavigationMenu>
                 <DropdownMenu>
                     <DropdownMenuTrigger>
                         <div className="flex items-center">
@@ -146,15 +147,12 @@ export function Nav() {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <div className="flex items-center">
-                    <Notify />
-                </div>
             </div>
         </>
     );
 }
 
-export function Notify() {
+function Notify() {
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -162,36 +160,15 @@ export function Notify() {
                     <Bell size={24} weight="bold" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="bg-gray-950 text-white">
-                <h1 className="font-bold text-lg">Suas notificações ficam aqui</h1>
-                <p className="text-base pt-5 text-gray-600 font-semibold">Você não tem novas notificações</p>
+            <PopoverContent className="bg-gray-950 text-white border-none w-80">
+                <div className="grid gap-4">
+                    <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Notificações</h4>
+                        <Separator className="bg-gray-700" />
+                        <p className="text-sm text-gray-500">Sem notificações.</p>
+                    </div>
+                </div>
             </PopoverContent>
         </Popover>
-    );
-}
-
-export function NavHome({ id }) {
-    const defaultNavTheme = "mt-3 bg-green-500 text-white p-8 group inline-flex h-10 w-52 items-center justify-center rounded-lg text-sm font-bold transition-colors hover:bg-green-500 hover:text-white focus:bg-green-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-green-700 data-[state=open]:bg-green-700";
-    const navTheme = "mt-3 bg-gray-900 text-white p-8 group inline-flex h-10 w-52 items-center justify-center rounded-lg text-sm font-bold transition-colors hover:bg-green-500 hover:text-white focus:bg-green-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-green-700 data-[state=open]:bg-green-700";
-    const iconTextTheme = "pl-3";
-
-    return (
-        <NavigationMenu>
-            <NavigationMenuList className="flex flex-col justify-center items-center">
-                {[
-                    { href: "/user", icon: <UserCircle size={24} weight="bold" />, label: "MEU PERFIL", id: 0 },
-                    { href: "/org", icon: <Sword size={24} weight="bold" />, label: "ORGANIZAÇÃO" },
-                    { href: "/family", icon: <UsersFour size={24} weight="bold" />, label: "MINHA FAMÍLIA" },
-                ].map(({ href, icon, label, id: linkId }) => (
-                    <NavigationMenuItem key={href}>
-                        <Link href={href} legacyBehavior passHref>
-                            <NavigationMenuLink className={id === linkId ? defaultNavTheme : navTheme}>
-                                {icon} <span className={iconTextTheme}>{label}</span>
-                            </NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
-                ))}
-            </NavigationMenuList>
-        </NavigationMenu>
     );
 }
