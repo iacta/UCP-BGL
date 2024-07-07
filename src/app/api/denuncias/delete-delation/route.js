@@ -5,8 +5,6 @@ import prisma from "@/lib/prisma";
 import { getUserInfo } from '@/app/dashboard/user';
 import { del, list } from '@vercel/blob';
 
-export const runtime = 'edge';
-
 export async function DELETE(request) {
     const user = await getUserInfo();
     try {
