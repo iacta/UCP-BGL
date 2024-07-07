@@ -1,4 +1,5 @@
 'use server';
+
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
@@ -9,28 +10,35 @@ export async function DELETE(request) {
     const user = await getUserInfo();
     try {
         const { delationId, reporterId } = await request.json();
+        
+        // Deletar a denúncia no banco de dados
         const delDB = await prisma.delation.delete({
             where: {
                 id: delationId,
             },
-        })
+        });
+        
+        // Listar blobs
         const { blobs } = await list();
-        const filteredBlob = blobs.filter(blob => blob.pathname.includes(`denuncias/${reporterId}/${delationId}`));
+        
+        // Filtrar os blobs com o caminho correto
+        const filteredBlobs = blobs.filter(blob => blob.pathname.includes(`denuncias/${reporterId}/${delationId}`));
 
-        if (filteredBlob.length > 0) {
-            await del(filteredBlob);
-        } else {
-            console.log('URL não encontrada');
-        }
-        await prisma.$disconnect()
+        // Deletar os blobs encontrados
+        await Promise.all(filteredBlobs.map(async blob => {
+            await del(blob.url); // Utiliza a URL do blob para deletar
+        }));
+
+        await prisma.$disconnect();
 
         return NextResponse.json({ success: true, message: 'Denúncia deletada com sucesso' }, { status: 200 });
     } catch (error) {
-        await prisma.$disconnect()
-        console.error('Erro ao criar denuncia:', error);
+        await prisma.$disconnect();
+        console.error('Erro ao deletar denúncia:', error);
         return NextResponse.json({ success: false, error: 'Erro interno do servidor.' }, { status: 500 });
     }
 }
+
 
 
 export async function notifyDC(accused, reporter, accusedOrg, reporterOrg, description, reason) {
