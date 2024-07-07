@@ -4,9 +4,10 @@ import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
 import { getUserInfo } from '@/app/dashboard/user';
 import { del, list } from '@vercel/blob';
- 
-export const runtime = 'edge';
 
+export const config = {
+    runtime: 'edge',
+};
 export async function DELETE(request) {
     const user = await getUserInfo();
     try {
@@ -22,7 +23,7 @@ export async function DELETE(request) {
         if (filteredBlob.length > 0) {
             await del(filteredBlob);
         } else {
-          console.log('URL não encontrada');
+            console.log('URL não encontrada');
         }
         await prisma.$disconnect()
 
