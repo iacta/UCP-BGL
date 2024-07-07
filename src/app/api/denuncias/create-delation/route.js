@@ -34,7 +34,7 @@ export async function POST(request) {
         const [mimeType, base64Data] = image.split(';base64,');
         const buffer = Buffer.from(base64Data, 'base64');
         const fileName = `${uuidv4()}.${mimeType.split('/')[1]}`;
-        const filePath = `denuncias/${fileName}`; // Caminho para a pasta "denuncias"
+        const filePath = `denuncias/${reporter}/${result.id}/${fileName}`; 
 
         const blob = await put(filePath, buffer, {
           access: 'public',
