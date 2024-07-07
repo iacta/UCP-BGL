@@ -1,34 +1,19 @@
-'use server';
-import fs from 'fs';
-import path from 'path';
-import {NextRequest, NextResponse} from "next/server";
+import { NextResponse } from 'next/server';
+import { get } from '@vercel/blob';
 
 export async function GET(request, { params }) {
   const { reporterId, delationId } = params;
 
   try {
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', reporterId, delationId.toString());
-    const files = await fs.promises.readdir(uploadsDir);
+    const images = await get(`denuncias/${reporterId}/${delationId}`);
 
-    const imagens = files.filter((file) => {
-      const extension = path.extname(file).toLowerCase();
-      return ['.jpg', '.jpeg', '.png', '.gif', '.bmp'].includes(extension);
-    });
-
-    const imagensComDataCriacao = await Promise.all(imagens.map(async (imagem) => {
-      const filePath = path.join(uploadsDir, imagem);
-      const stats = await fs.promises.stat(filePath);
-      return { nome: imagem, dataCriacao: stats.birthtime };
-    }));
-
-    const imagensOrdenadas = imagensComDataCriacao.sort((a, b) => b.dataCriacao - a.dataCriacao);
-
-    const imagensComURLs = imagensOrdenadas.map((imagem) => {
+    const imagensComURLs = images.map((image) => {
       return {
-        nome: imagem.nome,
-        url: `/uploads/${reporterId}/${delationId}/${imagem.nome}`
+        nome: image.Key.split('/').pop(),
+        url: image.Location
       };
     });
+
     return NextResponse.json(imagensComURLs);
   } catch (error) {
     console.error('Erro ao listar imagens:', error);

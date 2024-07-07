@@ -29,7 +29,7 @@ export async function GET(request, { params }) {
         }
 
     } catch (error) {
-        console.error('Erro ao listar imagens:', error);
+        console.error('Erro ao listar denuncias:', error);
         throw error;
     }
 }
