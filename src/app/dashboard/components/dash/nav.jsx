@@ -60,8 +60,8 @@ export function Nav() {
             <div className="absolute left-20 -mt-40">
                 <img src="/bgl.png" alt="Logo" className="h-52 w-64" />
             </div>
-            <div className="hidden lg:flex lg:flex-grow lg:justify-center lg:items-center mt-32 w-full rounded-lg">
-                <div className="w-max flex justify-center bg-gray-900 p-2 max-w-6xl">
+            <div className="hidden lg:flex lg:flex-grow lg:justify-center lg:items-center mt-32 w-full">
+                <div className="w-max flex justify-center bg-gray-900 rounded-md p-2 max-w-6xl">
                     <NavigationMenu className="flex-grow max-w-6xl mx-auto">
                         <NavigationMenuList className="flex justify-center space-x-5">
                             {[
@@ -156,7 +156,7 @@ function Notify() {
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="bg-gray-900 border-none hover:bg-green-500 mr-5">
+                <Button variant="outline" size="icon" className="bg-gray-900 border-none hover:bg-green-500 ml-2 mr-5">
                     <Bell size={24} weight="bold" />
                 </Button>
             </PopoverTrigger>

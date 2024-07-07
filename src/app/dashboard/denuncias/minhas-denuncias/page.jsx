@@ -125,7 +125,7 @@ const DenunciasList = ({ denuncias, type, func }) => {
                                             <h3 className="text-lg font-bold">{denuncia.title}</h3>
                                             <p><span className="font-bold">De:</span> {denuncia.relator}</p>
                                             <p><span className="font-bold">Contra:</span> {denuncia.accused}</p>
-                                            {type === "relator" || denuncia.veredit === "none" && (
+                                            {type === "relator" && denuncia.veredit === "none" && (
                                                 <div className='flex flex-row-reverse'>
                                                     <Button variant="outline" size="icon" className="bg-transparent hover:bg-red-500" onClick={(e) => {
                                                         e.stopPropagation();
@@ -142,16 +142,16 @@ const DenunciasList = ({ denuncias, type, func }) => {
                                             <DialogTitle>{denuncia.relator} contra {denuncia.accused} - {denuncia.title}</DialogTitle>
                                             <DialogDescription>
                                                 {denuncia.staff === false && (<>
-                                                    <h1 className='font-bold text-base'>Org do Denunciante:</h1>
-                                                    {denuncia.orgRelator}
-                                                    <h1 className='font-bold text-base'>Org do Acusado:</h1>
+                                                    <p className='font-bold text-base'>Org do Denunciante:</p>
+                                                    {denuncia.orgrelator}
+                                                    <p className='font-bold text-base'>Org do Acusado:</p>
                                                     {denuncia.orgAccused}
                                                 </>
                                                 )}
-                                                <h1 className='font-bold text-base'>Ocorrido:</h1>
+                                                <p className='font-bold text-base'>Ocorrido:</p>
                                                 {denuncia.description}
                                                 <ScrollArea className="h-48 pt-2">
-                                                    <h1 className='font-bold text-base'>Provas:</h1>
+                                                    <p className='font-bold text-base'>Provas:</p>
                                                     <div className="flex space-x-4">
                                                         {loadingImages ? (
                                                             <>
@@ -200,7 +200,7 @@ const DenunciasList = ({ denuncias, type, func }) => {
                                         <DialogHeader>
                                             <DialogTitle>Deletar denúncia!</DialogTitle>
                                             <DialogDescription>
-                                                <h1 className='font-bold text-base'>Você tem certeza que deseja deletar essa denúncia? Esta ação não pode ser desfeita!</h1>
+                                                <p className='font-bold text-base'>Você tem certeza que deseja deletar essa denúncia? Esta ação não pode ser desfeita!</p>
                                             </DialogDescription>
                                             <DialogFooter>
                                                 <DialogClose asChild>
@@ -208,9 +208,11 @@ const DenunciasList = ({ denuncias, type, func }) => {
                                                         Cancelar
                                                     </Button>
                                                 </DialogClose>
-                                                <Button className="bg-red-500" onClick={() => deleteDelation(denuncia.id, denuncia.relator)}>
-                                                    Deletar
-                                                </Button>
+                                                <DialogClose asChild>
+                                                    <Button className="bg-red-500" onClick={() => deleteDelation(denuncia.id, denuncia.relator)}>
+                                                        Deletar
+                                                    </Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogHeader>
                                     </DialogContent>

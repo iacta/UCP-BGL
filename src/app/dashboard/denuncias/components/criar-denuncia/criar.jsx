@@ -23,8 +23,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 export function NewDenuncia({ k }) {
     const { toast } = useToast();
     const formSchema = z.object({
-        username: z.string().max(20),
-        acussedName: z.string().max(20),
+        accusedName: z.string().max(20),
         orgRelator: z.string().max(20),
         orgAccused: z.string().max(20),
         about: z.string().max(10),
@@ -32,9 +31,7 @@ export function NewDenuncia({ k }) {
     });
     const form = useForm({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            username: "",
-        },
+        defaultValues: {},
     });
     const [images, setImages] = useState([]);
 
@@ -60,8 +57,9 @@ export function NewDenuncia({ k }) {
     };
 
     async function onSubmit(data) {
+        k(false);
         try {
-            const { username, accusedName, about, desc, orgRelator, orgAccused } = data;
+            const { accusedName, about, desc, orgRelator, orgAccused } = data;
 
             const base64Images = await Promise.all(images.map(image => convertToBase64(image.file)));
 
@@ -74,18 +72,16 @@ export function NewDenuncia({ k }) {
                     reason: about,
                     images: base64Images,
                     accused: accusedName,
-                    reporter: username,
                     accusedOrg: orgAccused,
                     reporterOrg: orgRelator,
                     description: desc,
                     staff: false
                 })
             });
-            k(false);
             if (res.status === 200) {
                 toast({
                     title: "Denúncia enviada com sucesso!",
-                    description: "Sua denúncia foi registrada e enviada a nossa equipe, logo logo iremos retornar com uma resposta"
+                    description: "Sua denúncia foi registrada e enviada a nossa equipe. Em breve retornaremos com uma resposta."
                 });
             } else {
                 toast({
@@ -104,23 +100,12 @@ export function NewDenuncia({ k }) {
             });
         }
     }
+
     return (
         <div className="">
             <ScrollArea className="h-96 w-auto p-2">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="username"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="user">Seu Nick</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="" className="bg-gray-900 rounded-md" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
                         <FormField
                             control={form.control}
                             name="accusedName"
@@ -150,7 +135,7 @@ export function NewDenuncia({ k }) {
                             name="orgAccused"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Org('s) do(s) Acusado(s)</FormLabel>
+                                    <FormLabel>Org(s) do(s) Acusado(s)</FormLabel>
                                     <FormControl>
                                         <Input placeholder="" className="bg-gray-900 rounded-md" {...field} />
                                     </FormControl>
@@ -202,7 +187,8 @@ export function NewDenuncia({ k }) {
                             </div>
                         </div>
                         <Button type="submit" className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md">
-                            Enviar</Button>
+                            Enviar
+                        </Button>
                     </form>
                 </Form>
             </ScrollArea>
@@ -213,7 +199,6 @@ export function NewDenuncia({ k }) {
 export function NewDenunciaStaff({ k }) {
     const { toast } = useToast();
     const formSchema = z.object({
-        username: z.string().max(20),
         staffName: z.string().max(20),
         about: z.string().max(10),
         desc: z.string().max(100)
@@ -221,7 +206,6 @@ export function NewDenunciaStaff({ k }) {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
         },
     });
     const [images, setImages] = useState([]);
@@ -248,8 +232,9 @@ export function NewDenunciaStaff({ k }) {
     };
 
     async function onSubmit(data) {
+        k(false);
         try {
-            const { username, staffName, about, desc } = data;
+            const { staffName, about, desc } = data;
 
             // Converter cada arquivo para base64
             const base64Images = await Promise.all(images.map(image => convertToBase64(image.file)));
@@ -264,14 +249,12 @@ export function NewDenunciaStaff({ k }) {
                     reason: about,
                     images: base64Images,
                     accused: staffName,
-                    reporter: username,
                     accusedOrg: 'Org do acusado',
                     reporterOrg: 'Org do denunciante',
                     description: desc,
                     staff: true
                 })
             });
-            k(false);
             if (res.status === 200) {
                 toast({
                     title: "Denúncia enviada com sucesso!",
@@ -298,18 +281,6 @@ export function NewDenunciaStaff({ k }) {
         <div className="">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="user">Seu Nick</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="" className="bg-gray-900 rounded-md" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
                     <FormField
                         control={form.control}
                         name="staffName"

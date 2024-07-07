@@ -7,26 +7,26 @@ import { getUserInfo } from '@/app/dashboard/user';
 export async function POST(request) {
     const info = await getUserInfo();
     try {
-        const { about, value } = await request.json();
+        const { about, value, staffID } = await request.json();
         
         if (isNaN(value) || value <= 0) {
             return NextResponse.json({ success: false, error: 'O valor fornecido não é válido.' }, { status: 400 });
         }
-
+        console.log(value);
         for (let i = 0; i < value; i++) {
             await prisma.warn.create({
                 data: {
                     reason: about,
                     issuedBy: info.nick,
                     staff: {
-                        connect: { id: 4 } // Assuming '4' is the ID of the 'LinkedSafe' staff member
+                        connect: { id: staffID } 
                     },
                 },
             });
         }
 
         await prisma.staff.update({
-            where: { id: 4 },
+            where: { id: staffID },
             data: { warns: { increment: value } },
         });
         

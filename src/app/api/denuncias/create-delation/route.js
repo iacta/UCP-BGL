@@ -7,10 +7,15 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid'
 import 'dotenv/config'
+import { getUserInfo } from '@/app/dashboard/user';
 
 export async function POST(request) {
   try {
-    const { reason, images, accused, reporter, accusedOrg, reporterOrg, description, staff } = await request.json();
+    
+    const info = await getUserInfo();
+    const { reason, images, accused, accusedOrg, reporterOrg, description, staff } = await request.json();
+    const reporter = info.nick;
+
     const result = await prisma.delation.create({
       data: {
         title: `${reporter} x ${accused}: ${reason}`,

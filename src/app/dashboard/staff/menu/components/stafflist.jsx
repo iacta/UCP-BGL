@@ -54,29 +54,32 @@ export function ShowStaffs({ type }) {
         },
     });
 
-    async function onSubmit(data) {
+    async function removeWarn(data) {
+        setLoading(true)
         try {
             const { warns, about } = data;
-            const endpoint = about === "" ? '/api/staffs/remove-warn' : '/api/staffs/new-warn';
-            
+            const endpoint = '/api/staffs/remove-warn'
+
             const body = {
                 value: warns,
                 staff: staffInfo[0],
                 staffID: staffInfo[1],
-                ...(endpoint === '/api/staffs/new-warn' && { about: about })
             };
-    
+
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-    
             if (res.status === 200) {
                 const data = await res.json();
-                toast({
-                    title: endpoint === '/api/staffs/remove-warn' ? "Aviso removido com sucesso!" : "Aviso registrado com sucesso!",
-                    description: endpoint === '/api/staffs/remove-warn' ? "O aviso do administrador foi removido com sucesso!" : "O aviso ao administrador foi enviado com sucesso!"
+                console.log(data);
+                const res2 = await fetch(`/api/staffs/get-staffs/${type}`);
+                const dataStaffs = await res2.json();
+                setStaffs(dataStaffs);
+                setLoading(false); toast({
+                    title: "Aviso removido com sucesso!",
+                    description: "O aviso do administrador foi removido com sucesso!"
                 });
             } else {
                 toast({
@@ -94,7 +97,51 @@ export function ShowStaffs({ type }) {
             });
         }
     }
-    
+    async function newWarn(data) {
+        setLoading(true)
+        try {
+            const { warns, about } = data;
+            const endpoint = '/api/staffs/new-warn';
+
+            const body = {
+                value: warns,
+                staff: staffInfo[0],
+                staffID: staffInfo[1],
+                about: about
+            };
+
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (res.status === 200) {
+                const data = await res.json();
+                console.log(data);
+                const res2 = await fetch(`/api/staffs/get-staffs/${type}`);
+                const dataStaffs = await res2.json();
+                setStaffs(dataStaffs);
+                setLoading(false); toast({
+                    title: "Aviso registrado com sucesso!",
+                    description: "O aviso ao administrador foi enviado com sucesso!"
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Oops! Algo deu errado!",
+                    description: "Tente novamente"
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao registrar aviso:', error);
+            toast({
+                variant: "destructive",
+                title: "Oops! Algo deu errado!",
+                description: "Erro ao registrar aviso. Tente novamente mais tarde."
+            });
+        }
+    }
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -114,7 +161,7 @@ export function ShowStaffs({ type }) {
     if (loading) {
         return <Skeleton className="w-[300px] h-[200px] rounded-md" />;
     }
-    if(staffs === []){
+    if (staffs === []) {
         return <div className="flex flex-col items-center justify-center w-full h-full">
             <p className="text-2xl font-bold">Nenhum administrador encontrado</p>
         </div>
@@ -174,7 +221,7 @@ export function ShowStaffs({ type }) {
                                     <div className="flex flex-wrap justify-between">
                                         <div className="sm:w-auto">
                                             <Form {...form}>
-                                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                                <form onSubmit={form.handleSubmit(newWarn)} className="space-y-6">
                                                     <FormField
                                                         control={form.control}
                                                         name="warns"
@@ -204,9 +251,11 @@ export function ShowStaffs({ type }) {
                                                             </FormItem>
                                                         )}
                                                     />
-                                                    <Button type="submit" className="bg-green-600 hover:bg-green-400 rounded-lg shadow-md">
-                                                        Adicionar
-                                                    </Button>
+                                                    <DialogClose asChild>
+                                                        <Button type="submit" className="bg-green-600 hover:bg-green-400 rounded-lg shadow-md">
+                                                            Adicionar
+                                                        </Button>
+                                                    </DialogClose>
                                                 </form>
                                             </Form>
                                         </div>
@@ -229,7 +278,7 @@ export function ShowStaffs({ type }) {
                                     <div className="flex flex-wrap justify-between">
                                         <div className="sm:w-auto">
                                             <Form {...form}>
-                                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                                                <form onSubmit={form.handleSubmit(removeWarn)} className="space-y-6">
                                                     <FormField
                                                         control={form.control}
                                                         name="value"
@@ -241,11 +290,6 @@ export function ShowStaffs({ type }) {
                                                                         placeholder=""
                                                                         className="bg-gray-900 rounded-md"
                                                                         {...field}
-                                                                        onChange={(e) => {
-                                                                            const formattedValue = formatNumber(e.target.value.replace(/\./g, ''));
-                                                                            form.setValue('value', formattedValue);
-                                                                            field.onChange(formattedValue);
-                                                                        }}
                                                                     />
                                                                 </FormControl>
                                                             </FormItem>

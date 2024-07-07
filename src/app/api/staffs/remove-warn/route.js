@@ -7,17 +7,14 @@ import { getUserInfo } from '@/app/dashboard/user';
 export async function POST(request) {
     const info = await getUserInfo();
     try {
-        const { value } = await request.json();
+        const { value, staffID } = await request.json();
 
         if (isNaN(value) || value <= 0) {
             return NextResponse.json({ success: false, error: 'O valor fornecido não é válido.' }, { status: 400 });
         }
 
-        const staffId = 4; // ID do staff para deletar avisos
-
-        // Buscar os avisos para deletar
         const warningsToDelete = await prisma.warn.findMany({
-            where: { staffID: staffId },
+            where: { staffID: staffID },
             take: value,
         });
 
@@ -25,13 +22,16 @@ export async function POST(request) {
             return NextResponse.json({ success: false, error: 'Nenhum aviso encontrado para remover.' }, { status: 404 });
         }
 
-        // Deletar os avisos encontrados
         for (const warn of warningsToDelete) {
             await prisma.warn.delete({
                 where: { id: warn.id },
             });
         }
-
+        
+        await prisma.staff.update({
+            where: { id: staffID },
+            data: { warns: { decrement: value } },
+        });        
         await prisma.$disconnect();
 
         return NextResponse.json({ success: true, message: 'Aviso removido com sucesso' }, { status: 200 });
