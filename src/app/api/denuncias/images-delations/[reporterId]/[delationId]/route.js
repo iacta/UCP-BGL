@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { get } from '@vercel/blob';
 import { list } from '@vercel/blob';
- 
+
 export const runtime = 'edge';
 
 export async function GET(request, { params }) {
   const { reporterId, delationId } = params;
+  const { blobs } = await list();
 
+  console.log(blobs);
   try {
     const images = await get(`denuncias/${reporterId}/${delationId}`);
 
@@ -17,9 +19,6 @@ export async function GET(request, { params }) {
       };
     });
 
-    const { blobs } = await list();
-
-    console.log(blobs);
     return NextResponse.json(imagensComURLs);
   } catch (error) {
     console.error('Erro ao listar imagens:', error);
