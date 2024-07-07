@@ -3,8 +3,6 @@
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
-import fs from 'fs';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid'
 import 'dotenv/config'
 import { getUserInfo } from '@/app/dashboard/user';
@@ -23,31 +21,31 @@ export async function POST(request) {
         description: description
       }
     })
-    await Promise.all(images.map(async (image, index) => {
-      const [mimeType, base64Data] = image.split(';base64,');
-      const extension = mimeType.split('/')[1];
-      const buffer = Buffer.from(base64Data, 'base64');
+    const uploadedImageUrls = await Promise.all(
+      images.map(async (image) => {
+        const [mimeType, base64Data] = image.split(';base64,');
+        const buffer = Buffer.from(base64Data, 'base64');
+        const fileName = `${uuidv4()}.${mimeType.split('/')[1]}`;
+        const filePath = `denuncias/${reporter}/${result.id}/${fileName}`; 
 
-      const fileName = `${uuidv4()}.${extension}`;
+        const blob = await put(filePath, buffer, {
+          access: 'public',
+        });
 
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'revisoes', info.nick, result.id.toString());
+        return blob.url;
+      })
+    );
 
-      await fs.promises.mkdir(uploadsDir, { recursive: true });
-
-      const filePath = path.join(uploadsDir, fileName);
-
-      await fs.promises.writeFile(filePath, buffer);
-    }));
     const response = await notifyDC(accused, info.nick, description, reason);
 
     if (response.status === 200) {
       await prisma.$disconnect()
 
-      return NextResponse.json({ success: true, message: 'Denúncia enviada com sucesso' }, { status: 200 });
+      return NextResponse.json({ success: true, message: 'Revisão enviada com sucesso' }, { status: 200 });
     } else {
       await prisma.$disconnect()
 
-      return NextResponse.json({ success: true, message: 'Denúncia enviada com sucesso' }, { status: 200 });
+      return NextResponse.json({ success: true, message: 'Revisão enviada com sucesso' }, { status: 200 });
     }
   } catch (error) {
     await prisma.$disconnect()

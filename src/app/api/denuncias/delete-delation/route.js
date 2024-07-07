@@ -3,20 +3,27 @@ import axios from 'axios';
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
 import { getUserInfo } from '@/app/dashboard/user';
-import fs from 'fs';
-import path from 'path';
+import { del, list } from '@vercel/blob';
+ 
+export const runtime = 'edge';
 
 export async function DELETE(request) {
     const user = await getUserInfo();
     try {
         const { delationId, reporterId } = await request.json();
-        const del = await prisma.delation.delete({
+        const delDB = await prisma.delation.delete({
             where: {
                 id: delationId,
             },
         })
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads', reporterId, delationId.toString());
-        await deleteFolderRecursive(uploadsDir);
+        const { blobs } = await list();
+        const filteredBlob = blobs.filter(blob => blob.pathname.includes(`denuncias/${reporterId}/${delationId}`));
+
+        if (filteredBlob.length > 0) {
+            await del(filteredBlob);
+        } else {
+          console.log('URL não encontrada');
+        }
         await prisma.$disconnect()
 
         return NextResponse.json({ success: true, message: 'Denúncia deletada com sucesso' }, { status: 200 });
@@ -27,21 +34,7 @@ export async function DELETE(request) {
     }
 }
 
-async function deleteFolderRecursive(folderPath) {
-    if (await fs.promises.stat(folderPath).catch(() => false)) {
-        const files = await fs.promises.readdir(folderPath);
-        await Promise.all(files.map(async (file) => {
-            const curPath = path.join(folderPath, file);
-            const stat = await fs.promises.lstat(curPath);
-            if (stat.isDirectory()) {
-                await deleteFolderRecursive(curPath);
-            } else {
-                await fs.promises.unlink(curPath);
-            }
-        }));
-        await fs.promises.rmdir(folderPath);
-    }
-}
+
 export async function notifyDC(accused, reporter, accusedOrg, reporterOrg, description, reason) {
     const roleId = '913086425702989835';
     const embeds = [
