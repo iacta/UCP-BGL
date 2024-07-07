@@ -19,7 +19,7 @@ export async function POST(request) {
             data: {
                 veredit: veredit,
                 vereditDescription: vereditDesc,
-                adminReply: user
+                adminReply: user.nick
             },
         })
         /*const response = await notifyDC(veredit);

@@ -4,49 +4,38 @@ import axios from 'axios';
 import { NextResponse } from 'next/server';
 import prisma from "@/lib/prisma";
 import { getUserInfo } from '@/app/dashboard/user';
-import fs from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid'
+import { del, list } from '@vercel/blob';
+
 
 export async function DELETE(request) {
     try {
         const { delationId, reporterId } = await request.json();
         const user = await getUserInfo();
-        const del = await prisma.delation.delete({
+        const delDB = await prisma.revision.delete({
             where: {
                 id: delationId,
             },
         })
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads', reporterId, delationId.toString());
-        await deleteFolderRecursive(uploadsDir);
+        const { blobs } = await list();
+        
+        // Filtrar os blobs com o caminho correto
+        const filteredBlobs = blobs.filter(blob => blob.pathname.includes(`denuncias/${reporterId}/${delationId}`));
+
+        // Deletar os blobs encontrados
+        await Promise.all(filteredBlobs.map(async blob => {
+            await del(blob.url); // Utiliza a URL do blob para deletar
+        }));
+
         await prisma.$disconnect()
 
-        return NextResponse.json({ success: true, message: 'Denúncia deletada com sucesso' }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Revisao deletada com sucesso' }, { status: 200 });
     } catch (error) {
         await prisma.$disconnect()
-        console.error('Erro ao criar denuncia:', error);
+        console.error('Erro ao deletar revisao:', error);
         return NextResponse.json({ success: false, error: 'Erro interno do servidor.' }, { status: 500 });
     }
 }
 
-async function deleteFolderRecursive(folderPath) {
-    if (await fs.promises.stat(folderPath).catch(() => false)) {
-        const files = await fs.promises.readdir(folderPath);
-        await Promise.all(files.map(async (file) => {
-            const curPath = path.join(folderPath, file);
-            const stat = await fs.promises.lstat(curPath);
-            if (stat.isDirectory()) {
-                // Recursivamente deleta subdiretórios
-                await deleteFolderRecursive(curPath);
-            } else {
-                // Deleta arquivo
-                await fs.promises.unlink(curPath);
-            }
-        }));
-        // Deleta o diretório vazio
-        await fs.promises.rmdir(folderPath);
-    }
-}
 export async function notifyDC(accused, reporter, accusedOrg, reporterOrg, description, reason) {
     const roleId = '913086425702989835';
     const embeds = [
