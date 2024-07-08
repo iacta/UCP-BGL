@@ -269,3 +269,115 @@ export function DenunciasResolvedList ({ denuncias }) {
         </div>
     );
 };
+
+export function RevisionList ({ revisoes, func }) {
+    const [imagens, setImagens] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredRevisoes, setFilteredRevisoes] = useState(revisoes);
+    const [loadingImages, setLoadingImages] = useState(false);
+
+    async function fetchImagens(reporterId, delationId) {
+        try {
+            setLoadingImages(true);
+            const res = await fetch(`/api/revisoes/images-revisions/${reporterId}/${delationId}`);
+            const data = await res.json();
+            setImagens(data);
+            setLoadingImages(false);
+        } catch (error) {
+            console.error(error);
+            setLoadingImages(false);
+        }
+    }
+
+    useEffect(() => {
+        setFilteredRevisoes(
+            revisoes.filter((denuncia) =>
+                denuncia.relator.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                denuncia.accused.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+    }, [searchQuery, revisoes]);
+
+    return (
+        <div className="flex justify-center items-center">
+            <div className="w-full max-w-md">
+                <SearchBar onChange={setSearchQuery} />
+                {revisoes.length > 0 ? (
+                    <div className="flex flex-col items-center justify-center">
+                        {filteredRevisoes.map((denuncia, index) => (
+                            <div key={index} className="mb-4">
+                                <Dialog open={isMainDialogOpen} onOpenChange={setIsMainDialogOpen}>
+                                    <DialogTrigger onClick={() => fetchImagens(denuncia.relator, denuncia.id)}>
+                                        <div className="border-none p-4 rounded-md shadow-lg cursor-pointer bg-gray-950 hover:bg-red-500 w-full sm:w-[300px]">
+                                            <h3 className="text-lg font-bold">{denuncia.title}</h3>
+                                            <p><span className="font-bold">De:</span> {denuncia.relator}</p>
+                                            <p><span className="font-bold">Contra:</span> {denuncia.accused}</p>
+                                        </div>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-gray-950 border-none text-white rounded-md">
+                                        <DialogHeader>
+                                            <DialogTitle>{denuncia.relator} contra {denuncia.accused} - {denuncia.title}</DialogTitle>
+                                            <DialogDescription>
+                                                {denuncia.staff === false && (<>
+                                                    <h1 className='font-bold text-base'>Org do Denunciante:</h1>
+                                                    {denuncia.orgRelator}
+                                                    <h1 className='font-bold text-base'>Org do Acusado:</h1>
+                                                    {denuncia.orgAccused}
+                                                </>
+                                                )}
+                                                <h1 className='font-bold text-base'>Ocorrido:</h1>
+                                                {denuncia.description}
+                                                <ScrollArea className="h-48 pt-2">
+                                                    <h1 className='font-bold text-base'>Provas:</h1>
+                                                    <div className="flex space-x-4">
+                                                        {loadingImages ? (
+                                                            <>
+                                                                <Skeleton className="h-24 w-24 rounded-md" />
+                                                                <Skeleton className="h-24 w-24 rounded-md" />
+                                                                <Skeleton className="h-24 w-24 rounded-md" />
+                                                            </>
+                                                        ) : (
+                                                            imagens.map((imagem, idx) => (
+                                                                <img
+                                                                    key={idx}
+                                                                    src={imagem.url}
+                                                                    alt={imagem.nome}
+                                                                    className="h-24 w-24 cursor-pointer object-cover"
+                                                                    onClick={() => {
+                                                                        setSelectedImage(imagem);
+                                                                        setIsImageDialogOpen(true);
+                                                                    }}
+                                                                />
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </ScrollArea>
+                                                <ReplyReport delationId={denuncia.id} k={setIsMainDialogOpen}  func={() => func()}/>
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-white">Nenhuma denúncia encontrada.</p>
+                )}
+                {selectedImage && (
+                    <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+                        <DialogContent className="flex items-center justify-center bg-opacity-90 backdrop-blur-sm bg-gray-950 border-none text-white rounded-md max-w-screen-lg w-full">
+                            <img
+                                src={selectedImage.url}
+                                alt={selectedImage.nome}
+                                className="max-h-[80vh] max-w-[80vw] object-contain"
+                            />
+                        </DialogContent>
+                    </Dialog>
+                )}
+            </div>
+        </div>
+    );
+};

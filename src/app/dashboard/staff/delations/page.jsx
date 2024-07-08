@@ -19,12 +19,12 @@ import { NavHome } from '../components/nav';
 import { Skeleton } from "@/components/ui/skeleton"
 import { DenunciasList, DenunciasResolvedList } from "./components/list"
 
+
 export default function Delations() {
     const [denuncias, setDenuncias] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("none");
 
-    // Função para buscar dados
     const fetchData = async (tab) => {
         try {
             const res = await fetch(`/api/denuncias/get-delations/${tab}`);
@@ -37,49 +37,18 @@ export default function Delations() {
         }
     };
 
-    // Função para carregar dados, usada também externamente
     const loader = async () => {
         setLoading(true);
         await fetchData(activeTab);
     };
 
-    // Atualiza os dados quando a aba ativa muda
     useEffect(() => {
         loader();
     }, [activeTab]);
 
-    // Handle para mudar de aba
     const handleTabChange = (value) => {
         if (value !== activeTab) {
             setActiveTab(value);
-        }
-    };
-
-    // Função para retornar o título da aba ativa
-    const getTitle = () => {
-        switch (activeTab) {
-            case "none":
-                return "Denúncias em Aberto";
-            case "yes":
-                return "Denúncias Resolvidas";
-            case "revisions":
-                return "Revisões";
-            default:
-                return "Denúncias";
-        }
-    };
-
-    // Função para retornar o componente da aba ativa
-    const getComponent = () => {
-        switch (activeTab) {
-            case "none":
-                return <DenunciasList denuncias={denuncias} func={loader} />;
-            case "yes":
-                return <DenunciasResolvedList denuncias={denuncias} />;
-            case "revisions":
-                return;
-            default:
-                return null;
         }
     };
 
@@ -93,13 +62,34 @@ export default function Delations() {
             <div className="pl-4 sm:pl-10 pt-5">
                 <NavHome />
                 <div className="flex justify-center items-center mt-8 sm:-mt-64">
-                    <TabsComponent activeTab={activeTab} handleTabChange={handleTabChange} />
-                    <ContentComponent title={getTitle()} component={getComponent()} />
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full sm:w-[400px]">
+                        <TabsList className="p-2 bg-gray-900 text-white">
+                            <TabsTrigger value="none" className="cursor-pointer">
+                                Denúncias em Aberto
+                            </TabsTrigger>
+                            <TabsTrigger value="yes" className="cursor-pointer">
+                                Denúncias Resolvidas
+                            </TabsTrigger>
+                            <TabsTrigger value="revisions" className="cursor-pointer">
+                                Revisões
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="none">
+                            <ContentComponent title="Denúncias em Aberto" component={<DenunciasList denuncias={denuncias} loader={loader} />} />
+                        </TabsContent>
+                        <TabsContent value="yes">
+                            <ContentComponent title="Denúncias Resolvidas" component={<DenunciasResolvedList denuncias={denuncias} />} />
+                        </TabsContent>
+                        <TabsContent value="revisions">
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
         </main>
     );
 }
+
+
 
 // Componente de carregamento
 const LoadingComponent = () => (
@@ -125,48 +115,14 @@ const LoadingComponent = () => (
     </main>
 );
 
-// Componente de abas
-const TabsComponent = ({ activeTab, handleTabChange }) => (
-    <Tabs defaultValue="none" value={activeTab} className="w-full sm:w-[400px]">
-        <TabsList className="p-2 bg-gray-900 text-white">
-            <TabsTrigger
-                value="none"
-                data-state={activeTab === "none" ? "active" : ""}
-                className="cursor-pointer"
-                onClick={() => handleTabChange('none')}
-            >
-                Denúncias em Aberto
-            </TabsTrigger>
-            <TabsTrigger
-                value="yes"
-                data-state={activeTab === "yes" ? "active" : ""}
-                className="cursor-pointer"
-                onClick={() => handleTabChange('yes')}
-            >
-                Denúncias Resolvidas
-            </TabsTrigger>
-            <TabsTrigger
-                value="revisions"
-                data-state={activeTab === "revisions" ? "active" : ""}
-                className="cursor-pointer"
-                onClick={() => handleTabChange('revisions')}
-            >
-                Revisões
-            </TabsTrigger>
-        </TabsList>
-    </Tabs>
-);
-
 // Componente de conteúdo
 const ContentComponent = ({ title, component }) => (
-    <TabsContent value="none">
-        <Card className="bg-gray-900 text-white border-none shadow-lg">
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-                {component}
-            </CardContent>
-        </Card>
-    </TabsContent>
-);
+    <Card className="bg-gray-900 text-white border-none shadow-lg">
+        <CardHeader>
+            <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+            {component}
+        </CardContent>
+    </Card>
+)
