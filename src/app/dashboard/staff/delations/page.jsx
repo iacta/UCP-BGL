@@ -42,7 +42,9 @@ export default function Delations() {
     }, [activeTab]);
 
     const handleTabChange = (value) => {
-        setActiveTab(value);
+        if (value !== activeTab) {
+            setActiveTab(value);
+        }
     };
 
     if (loading) {
