@@ -26,7 +26,6 @@ export default function Delations() {
 
     const fetchData = async () => {
         try {
-            console.log(activeTab)
             const res = await fetch(`/api/denuncias/get-delations/${activeTab}`);
             const data = await res.json();
             console.log(data);
@@ -73,9 +72,10 @@ export default function Delations() {
     }
 
     const handleTabChange = (value) => {
+        setDenuncias([])
         console.log(value)
-        setLoading(true);
         setActiveTab(value);
+        setLoading(true);
         fetchData();
     };
 
