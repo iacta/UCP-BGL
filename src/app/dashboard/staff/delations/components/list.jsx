@@ -11,7 +11,7 @@ import {
     DialogClose
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ReplyReport } from './reply';
+import { ReplyReport, ReplyRevision } from './reply';
 import { Skeleton } from "@/components/ui/skeleton"
 
 
@@ -294,9 +294,9 @@ export function RevisionList ({ revisoes, func }) {
 
     useEffect(() => {
         setFilteredRevisoes(
-            revisoes.filter((denuncia) =>
-                denuncia.relator.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                denuncia.accused.toLowerCase().includes(searchQuery.toLowerCase())
+            revisoes.filter((revisao) =>
+                revisao.relator.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                revisao.accused.toLowerCase().includes(searchQuery.toLowerCase())
             )
         );
     }, [searchQuery, revisoes]);
@@ -307,29 +307,25 @@ export function RevisionList ({ revisoes, func }) {
                 <SearchBar onChange={setSearchQuery} />
                 {revisoes.length > 0 ? (
                     <div className="flex flex-col items-center justify-center">
-                        {filteredRevisoes.map((denuncia, index) => (
+                        {filteredRevisoes.map((revisao, index) => (
                             <div key={index} className="mb-4">
                                 <Dialog open={isMainDialogOpen} onOpenChange={setIsMainDialogOpen}>
-                                    <DialogTrigger onClick={() => fetchImagens(denuncia.relator, denuncia.id)}>
+                                    <DialogTrigger onClick={() => fetchImagens(revisao.relator, revisao.id)}>
                                         <div className="border-none p-4 rounded-md shadow-lg cursor-pointer bg-gray-950 hover:bg-red-500 w-full sm:w-[300px]">
-                                            <h3 className="text-lg font-bold">{denuncia.title}</h3>
-                                            <p><span className="font-bold">De:</span> {denuncia.relator}</p>
-                                            <p><span className="font-bold">Contra:</span> {denuncia.accused}</p>
+                                            <h3 className="text-lg font-bold">{revisao.title}</h3>
+                                            <p><span className="font-bold">De:</span> {revisao.relator}</p>
+                                            <p><span className="font-bold">Contra:</span> {revisao.accused}</p>
                                         </div>
                                     </DialogTrigger>
                                     <DialogContent className="bg-gray-950 border-none text-white rounded-md">
                                         <DialogHeader>
-                                            <DialogTitle>{denuncia.relator} contra {denuncia.accused} - {denuncia.title}</DialogTitle>
+                                            <DialogTitle>Revisão: {revisao.relator}</DialogTitle>
                                             <DialogDescription>
-                                                {denuncia.staff === false && (<>
-                                                    <h1 className='font-bold text-base'>Org do Denunciante:</h1>
-                                                    {denuncia.orgRelator}
-                                                    <h1 className='font-bold text-base'>Org do Acusado:</h1>
-                                                    {denuncia.orgAccused}
-                                                </>
-                                                )}
+                                                    <h1 className='font-bold text-base'>Staff Responsável pela punição:</h1>
+                                                    {revisao.staff}
+                                                    
                                                 <h1 className='font-bold text-base'>Ocorrido:</h1>
-                                                {denuncia.description}
+                                                {revisao.reason}
                                                 <ScrollArea className="h-48 pt-2">
                                                     <h1 className='font-bold text-base'>Provas:</h1>
                                                     <div className="flex space-x-4">
@@ -355,7 +351,7 @@ export function RevisionList ({ revisoes, func }) {
                                                         )}
                                                     </div>
                                                 </ScrollArea>
-                                                <ReplyReport delationId={denuncia.id} k={setIsMainDialogOpen}  func={() => func()}/>
+                                                <ReplyRevision revisionID={revisao.id} k={setIsMainDialogOpen}  func={() => func()}/>
                                             </DialogDescription>
                                         </DialogHeader>
                                     </DialogContent>

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/tabs"
 import { NavHome } from '../components/nav';
 import { Skeleton } from "@/components/ui/skeleton"
-import { DenunciasList, DenunciasResolvedList } from "./components/list"
+import { DenunciasList, DenunciasResolvedList, RevisionList } from "./components/list"
 
 
 export default function Delations() {
@@ -26,14 +26,26 @@ export default function Delations() {
     const [activeTab, setActiveTab] = useState("none");
 
     const fetchData = async (tab) => {
-        try {
-            const res = await fetch(`/api/denuncias/get-delations/${tab}`);
-            const data = await res.json();
-            setDenuncias(data);
-        } catch (error) {
-            console.error('Erro ao buscar denúncias:', error);
-        } finally {
-            setLoading(false);
+        if (tab === "revisions") {
+            try {
+                const res = await fetch(`/api/revisao/get-revisoes/${tab}`);
+                const data = await res.json();
+                setDenuncias(data);
+            } catch (error) {
+                console.error('Erro ao buscar revisões:', error);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            try {
+                const res = await fetch(`/api/denuncias/get-delations/${tab}`);
+                const data = await res.json();
+                setDenuncias(data);
+            } catch (error) {
+                console.error('Erro ao buscar denúncias:', error);
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -75,12 +87,13 @@ export default function Delations() {
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="none">
-                            <ContentComponent title="Denúncias em Aberto" component={<DenunciasList denuncias={denuncias} loader={loader} />} />
+                            <ContentComponent title="Denúncias em Aberto" component={<DenunciasList denuncias={denuncias} func={() => loader()} />} />
                         </TabsContent>
                         <TabsContent value="yes">
                             <ContentComponent title="Denúncias Resolvidas" component={<DenunciasResolvedList denuncias={denuncias} />} />
                         </TabsContent>
                         <TabsContent value="revisions">
+                            <ContentComponent title="Revisões" component={<RevisionList revisoes={denuncias} func={() => loader()} />} />
                         </TabsContent>
                     </Tabs>
                 </div>
