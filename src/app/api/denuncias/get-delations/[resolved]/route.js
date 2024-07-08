@@ -14,7 +14,7 @@ export async function GET(request, { params }) {
         prisma.$disconnect();
         return NextResponse.json(delations);
     } catch (error) {
-        console.error('Erro ao listar imagens:', error);
+        console.error('Erro ao listar denuncias:', error);
         throw error;
     }
 }
