@@ -24,28 +24,28 @@ export default function Delations() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("none");
 
-    const fetchData = async (tab) => {
+    const fetchData = async () => {
         try {
-            const res = await fetch(`/api/denuncias/get-delations/${tab}`);
+            console.log(activeTab)
+            const res = await fetch(`/api/denuncias/get-delations/${activeTab}`);
             const data = await res.json();
+            console.log(data);
             setDenuncias(data);
+            setLoading(false);
         } catch (error) {
             console.error('Erro ao buscar denúncias:', error);
-        } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
+    const loader = async () => {
         setLoading(true);
-        fetchData(activeTab);
-    }, [activeTab]);
+        await fetchData();
+    }
 
-    const handleTabChange = (value) => {
-        if (value !== activeTab) {
-            setActiveTab(value);
-        }
-    };
+    useEffect(() => {
+        fetchData();
+    }, [activeTab]);
 
     if (loading) {
         return (
@@ -71,6 +71,13 @@ export default function Delations() {
             </main>
         );
     }
+
+    const handleTabChange = (value) => {
+        console.log(value)
+        setLoading(true);
+        setActiveTab(value);
+        fetchData();
+    };
 
     return (
         <main className="text-white">
@@ -111,7 +118,7 @@ export default function Delations() {
                                     <CardTitle>Denúncias em Aberto</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-2">
-                                    <DenunciasList denuncias={denuncias} />
+                                    <DenunciasList denuncias={denuncias}  func={() => loader()}/>
                                 </CardContent>
                             </Card>
                         </TabsContent>
