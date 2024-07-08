@@ -22,7 +22,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export function ReplyReport({ delationId, k }) {
+export function ReplyReport({ delationId, k, func }) {
     const { toast } = useToast();
     const formSchema = z.object({
         reply: z.string().max(100),
@@ -52,6 +52,7 @@ export function ReplyReport({ delationId, k }) {
                     veredit: veredit
                 })
             });
+            func();
             k(false);
             if (res.status === 200) {
                 toast({

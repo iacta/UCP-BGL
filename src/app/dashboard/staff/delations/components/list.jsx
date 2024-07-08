@@ -28,7 +28,7 @@ const SearchBar = ({ onChange }) => {
     );
 };
 
-export function DenunciasList ({ denuncias }) {
+export function DenunciasList ({ denuncias, func }) {
     const [imagens, setImagens] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
@@ -113,7 +113,7 @@ export function DenunciasList ({ denuncias }) {
                                                         )}
                                                     </div>
                                                 </ScrollArea>
-                                                <ReplyReport delationId={denuncia.id} k={setIsMainDialogOpen} />
+                                                <ReplyReport delationId={denuncia.id} k={setIsMainDialogOpen}  func={() => func()}/>
                                             </DialogDescription>
                                         </DialogHeader>
                                     </DialogContent>

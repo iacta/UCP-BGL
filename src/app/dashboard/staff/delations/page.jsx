@@ -37,6 +37,11 @@ export default function Delations() {
         }
     };
 
+    const loader = async () => {
+        setLoading(true);
+        await fetchData();
+    }
+
     useEffect(() => {
         fetchData();
     }, [activeTab]);
@@ -111,7 +116,7 @@ export default function Delations() {
                                     <CardTitle>Denúncias em Aberto</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-2">
-                                    <DenunciasList denuncias={denuncias} />
+                                    <DenunciasList denuncias={denuncias}  func={() => loader()}/>
                                 </CardContent>
                             </Card>
                         </TabsContent>
