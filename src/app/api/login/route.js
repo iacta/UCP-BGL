@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers'
+import 'dotenv/config'
+import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
     const { username, password } = await request.json();
@@ -18,7 +20,7 @@ export async function POST(request) {
     } else {
         console.log('User not found');
     }
-  
+
     if (user && await bcrypt.compare(password, user.password)) {
         const info = {
             nick: username,
@@ -27,7 +29,11 @@ export async function POST(request) {
             helper: user.helper,
             staff: user.staffLevel
         }
-        cookies().set('user', JSON.stringify(info), { secure: true })
+        cookies().set('user', JSON.stringify(info), {
+            secure: true, httpOnly: true,
+            sameSite: 'Strict'
+        })
+        jwt.sign({ userNick: username }, process.env.API_SECRET_TOKEN, { expiresIn: 300 })
         console.log('Password match');
         await prisma.$disconnect()
         return NextResponse.json({ message: 'Login successful' });

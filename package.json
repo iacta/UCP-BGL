@@ -36,6 +36,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "gamedig": "^5.0.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.379.0",
     "mercadopago": "^2.0.9",
     "next": "14.2.3",

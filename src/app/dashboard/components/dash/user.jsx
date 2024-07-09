@@ -33,7 +33,6 @@ import {
     SketchLogo
 } from "@phosphor-icons/react";
 import { Skeleton } from "@/components/ui/skeleton";
-const divTheme = ""
 import { useState, useEffect } from "react";
 export function Perfil() {
     const [infoUser, setInfo] = useState([]);

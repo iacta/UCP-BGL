@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 import { getUserInfo } from '@/app/dashboard/user';
+import { authenticate } from 'middleware';
 
 export async function GET(request) {
     try {
