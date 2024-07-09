@@ -21,21 +21,30 @@ import { useDropzone } from 'react-dropzone';
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function NewRevision({ k }) {
-    const { toast } = useToast();
     const formSchema = z.object({
         staffName: z.string().max(20),
         about: z.string().max(10),
         desc: z.string().max(100)
     });
+
     const form = useForm({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-        },
+        defaultValues: {},
     });
+
     const [images, setImages] = useState([]);
 
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/jpeg, image/png, image/jpg, image/pjpeg',
+    const {
+        getRootProps,
+        getInputProps,
+        isDragActive,
+        isDragAccept,
+        isDragReject
+    } = useDropzone({
+        accept: {
+            'image/jpeg': ['.jpeg', '.jpg'],
+            'image/png': ['.png']
+        },
         multiple: true,
         onDrop: acceptedFiles => {
             const newImages = acceptedFiles.map(file => ({
@@ -96,6 +105,7 @@ export function NewRevision({ k }) {
             });
         }
     }
+
     return (
         <div className="">
             <Form {...form}>
@@ -142,11 +152,14 @@ export function NewRevision({ k }) {
                     />
                     <div>
                         <div
-                            {...getRootProps()}
-                            className="border-2 border-dashed border-gray-400 rounded-md p-4 cursor-pointer transition duration-300"
+                            {...getRootProps({
+                                className: 'border-2 border-dashed border-gray-400 rounded-md p-4 cursor-pointer transition duration-300'
+                            })}
                         >
                             <input {...getInputProps()} />
-                            <p>Solte as imagens aqui ou clique para selecionar.</p>
+                            {isDragAccept && (<p>Todos os arquivos foram enviados.</p>)}
+                            {isDragReject && (<p className="text-red-600 font-bold">Apenas imagens são permitidas!</p>)}
+                            {!isDragActive && (<p>Clique aqui ou arraste as imagens até aqui.</p>)}
                         </div>
                         <div className="mt-4 grid grid-cols-3 gap-4">
                             {images.map((image, index) => (
@@ -157,7 +170,8 @@ export function NewRevision({ k }) {
                         </div>
                     </div>
                     <Button type="submit" className="bg-gray-900 hover:bg-gray-700 rounded-lg shadow-md">
-                        Enviar</Button>
+                        Enviar
+                    </Button>
                 </form>
             </Form>
         </div>

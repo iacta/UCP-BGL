@@ -26,6 +26,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Warning, Backspace } from "@phosphor-icons/react";
 
 const colors = {
+    'Helper': 'text-green-400',
     'Moderador': 'text-green-500',
     'Administrador': 'text-rose-600',
     'Coordenador': 'text-orange-300',
