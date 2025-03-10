@@ -1,37 +1,65 @@
-## UCP Brasil Gamer Life
+# 📌 UCP - Sistema de Gestão de Denúncias
 
+Este repositório contém um **Painel de Controle (UCP)** desenvolvido para gerenciamento de denúncias em uma plataforma de jogos ou comunidade online. A aplicação permite a criação, revisão e moderação de denúncias, além de integração com um sistema de compras via Mercado Pago.
 
-## Getting Started
+## 🛠 Tecnologias Utilizadas
+- **Node.js** - Back-end assíncrono e escalável
+- **React** - Biblioteca para construção da interface
+- **Next.js** - Framework para React com renderização server-side
+- **TypeScript** - Tipagem estática para maior confiabilidade
+- **Prisma** - ORM moderno para interação com o banco de dados
+- **MySQL** - Banco de dados relacional
+- **Phosphor Icons** - Biblioteca de ícones
 
-First, run the development server:
+## 🚀 Funcionalidades
+- 📌 **Criação e Gerenciamento de Denúncias** - Usuários podem reportar problemas e acompanhar o status de suas denúncias.
+- 🔍 **Sistema de Revisão** - Moderação de denúncias por uma equipe de staff.
+- 🔒 **Sistema de Login** - Autenticação segura para usuários e administradores.
+- ⚖️ **Sistema de Banimento** - Possibilidade de aplicação de sanções a usuários infratores.
+- 💳 **Compra de Moedas VIP** - Integração com a API do Mercado Pago para aquisição de moedas premium.
+- 🛡 **Sistema Staff** - Hierarquia de permissões para moderação eficiente.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📦 Como Executar o Projeto
+1. Clone este repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   ```
+2. Acesse o diretório do projeto:
+   ```bash
+   cd seu-repositorio
+   ```
+3. Instale as dependências:
+   ```bash
+   npm install
+   ```
+   ou, se estiver utilizando Yarn:
+   ```bash
+   yarn install
+   ```
+4. Configure o ambiente:
+   - Crie um arquivo `.env` com as configurações do banco de dados e credenciais da API do Mercado Pago.
+5. Execute as migrações do Prisma:
+   ```bash
+   npx prisma migrate dev
+   ```
+6. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+   ou
+   ```bash
+   yarn dev
+   ```
+7. Acesse **http://localhost:3000** no navegador para visualizar o projeto.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📸 Preview
+(Adicione uma imagem ou GIF do sistema em funcionamento aqui)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📜 Licença
+Este projeto está licenciado sob a **MIT License**. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
+📩 **Contato**  
+Caso tenha dúvidas, sugestões ou queira contribuir, entre em contato pelo [LinkedIn](https://www.linkedin.com/in/thiago-vitor/) ou envie um e-mail para thiagovt93@gmail.com.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Obrigado por conferir o projeto! 🚀
