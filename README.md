@@ -1,6 +1,6 @@
-# 📌 UCP - Sistema de Gestão de Denúncias
+# 📌 UCP - Painel de Controle para Servidor SAMP
 
-Este repositório contém um **Painel de Controle (UCP)** desenvolvido para gerenciamento de denúncias em uma plataforma de jogos ou comunidade online. A aplicação permite a criação, revisão e moderação de denúncias, além de integração com um sistema de compras via Mercado Pago.
+Este repositório contém um **Painel de Controle (UCP)** desenvolvido para um servidor **SAMP**. A aplicação permite que os jogadores gerenciem suas contas, realizem denúncias, comprem moedas VIP e acessem informações detalhadas sobre seus personagens no servidor.
 
 ## 🛠 Tecnologias Utilizadas
 - **Node.js** - Back-end assíncrono e escalável
@@ -12,21 +12,23 @@ Este repositório contém um **Painel de Controle (UCP)** desenvolvido para gere
 - **Phosphor Icons** - Biblioteca de ícones
 
 ## 🚀 Funcionalidades
-- 📌 **Criação e Gerenciamento de Denúncias** - Usuários podem reportar problemas e acompanhar o status de suas denúncias.
+- 📌 **Gerenciamento de Conta** - Exibição dos dados do jogador, incluindo nível, dinheiro, VIP, inventário e status geral.
+- 📌 **Sistema de Denúncias** - Usuários podem criar e responder denúncias dentro do UCP.
 - 🔍 **Sistema de Revisão** - Moderação de denúncias por uma equipe de staff.
-- 🔒 **Sistema de Login** - Autenticação segura para usuários e administradores.
-- ⚖️ **Sistema de Banimento** - Possibilidade de aplicação de sanções a usuários infratores.
+- 🔒 **Sistema de Login** - Autenticação segura para jogadores e administradores.
+- ⚖️ **Sistema de Banimento** - Aplicação de sanções a usuários infratores.
 - 💳 **Compra de Moedas VIP** - Integração com a API do Mercado Pago para aquisição de moedas premium.
 - 🛡 **Sistema Staff** - Hierarquia de permissões para moderação eficiente.
+- 📋 **Consulta de Dados do Jogador** - Visualização do RG virtual, itens, saldo, nível e status VIP diretamente no painel.
 
 ## 📦 Como Executar o Projeto
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/seu-usuario/ucp-bgl.git
    ```
 2. Acesse o diretório do projeto:
    ```bash
-   cd seu-repositorio
+   cd ucp-bgl
    ```
 3. Instale as dependências:
    ```bash
